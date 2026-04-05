@@ -33,8 +33,15 @@ npm run electron:build  # 构建 Electron 安装包
 - 避免额外依赖
 
 ### 编辑器架构
-`MarkdownEditor` 组件预留 WYSIWYG 升级接口：
+不同步骤使用不同编辑器策略：
+- **Step 4 (初步大纲)**: 纯 Textarea，min-height 400px，支持自动从 Step 2 同步
+- **其他长文本步骤**: MarkdownEditor 组件，支持 edit/preview 切换（预留 WYSIWYG 升级接口）
+
 ```jsx
+// Step 4 直接使用 textarea
+<textarea className="min-h-[400px] ..." />
+
+// 其他步骤使用 MarkdownEditor
 <MarkdownEditor mode="edit" />   // 当前: Textarea
 <MarkdownEditor mode="preview" /> // marked.js 渲染
 ```
@@ -69,8 +76,8 @@ src/
 - v1.1.1: UI优化 - 雪花图标、头像上传、双栏布局、完成按钮始终可点 ✅
 - v1.2: Step 4初步大纲 ✅、Step 6完成大纲 ✅
 - v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠、进度条弱化 ✅
-- v1.3: Step 8人物小传、Step 9规划场景、Step 10初稿
-- v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器
+- v1.3: Step 8人物小传（Markdown编辑器，每角色一个页面）、Step 9规划场景（每场景详细描述）、Step 10初稿（分章节管理）
+- v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器、项目库
 
 ## 快捷键
 
