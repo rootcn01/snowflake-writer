@@ -6,7 +6,9 @@ import Toast from './components/Toast/Toast';
 import OneSentence from './steps/OneSentence/OneSentence';
 import OneParagraph from './steps/OneParagraph/OneParagraph';
 import CharacterSummary from './steps/CharacterSummary/CharacterSummary';
+import StorySynopsis from './steps/StorySynopsis/StorySynopsis';
 import CharacterDetails from './steps/CharacterDetails/CharacterDetails';
+import SceneOutlines from './steps/SceneOutlines/SceneOutlines';
 import SceneList from './steps/SceneList/SceneList';
 import ExportModal from './components/ExportModal/ExportModal';
 
@@ -22,37 +24,11 @@ function AppContent() {
       case 2:
         return <CharacterSummary />;
       case 3:
-        // Story Synopsis - placeholder
-        return (
-          <div className="max-w-content mx-auto animate-fade-in">
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-text-primary mb-2">初步大纲</h1>
-              <p className="text-text-secondary">扩展为4-5页的详细故事摘要。</p>
-            </div>
-            <div className="card">
-              <p className="text-text-secondary text-center py-12">
-                Step 4 功能开发中...
-              </p>
-            </div>
-          </div>
-        );
+        return <StorySynopsis />;
       case 4:
         return <CharacterDetails />;
       case 5:
-        // Scene Outlines - placeholder
-        return (
-          <div className="max-w-content mx-auto animate-fade-in">
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-text-primary mb-2">完成大纲</h1>
-              <p className="text-text-secondary">每个场景的4句话描述。</p>
-            </div>
-            <div className="card">
-              <p className="text-text-secondary text-center py-12">
-                Step 6 功能开发中...
-              </p>
-            </div>
-          </div>
-        );
+        return <SceneOutlines />;
       case 6:
         return <SceneList />;
       case 7:

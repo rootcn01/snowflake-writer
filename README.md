@@ -13,13 +13,13 @@
 - **Step 1: 一句话概括** - 用 15-50 字概括整个故事
 - **Step 2: 一段式概括** - 动态 1-10 幕结构，每幕 30-80 字
 - **Step 3: 人物概括** - 角色卡片（头像、类型、目标、冲突、感悟）
+- **Step 4: 初步大纲** - Markdown 详细故事摘要，支持从一段式生成
 - **Step 5: 角色宝典** - 双栏布局，角色详细信息管理
+- **Step 6: 完成大纲** - 场景4句话描述（时间、地点、目标、结局）
 - **Step 7: 场景清单** - 场景列表与摘要
 
 ### 开发中
 
-- Step 4: 初步大纲
-- Step 6: 完成大纲
 - Step 8: 人物小传
 - Step 9: 规划场景
 - Step 10: 初稿撰写
@@ -72,7 +72,9 @@ src/
 │   ├── CharacterSummary/
 │   ├── OneParagraph/
 │   ├── OneSentence/
-│   └── SceneList/
+│   ├── SceneList/
+│   ├── SceneOutlines/
+│   └── StorySynopsis/
 ├── store/               # React Context
 └── utils/              # 工具函数
 ```
@@ -82,7 +84,7 @@ src/
 - v1.0: MVP - 3个核心步骤 + 本地存储 ✅
 - v1.1: 角色卡片(Step3/5)、幕数动态增删、自动跳转 ✅
 - v1.1.1: UI优化 - 雪花图标、头像上传、双栏布局、完成按钮始终可点 ✅
-- v1.2: Step 4初步大纲、Step 6完成大纲、Step 8人物小传、Step 9规划场景、Step 10初稿
+- v1.2: Step 4初步大纲 ✅、Step 6完成大纲 ✅、Step 8人物小传、Step 9规划场景、Step 10初稿
 - v1.3: WYSIWYG 编辑器、自定义步骤
 - v2.0: 关系图谱、时间线、AI 辅助
 
