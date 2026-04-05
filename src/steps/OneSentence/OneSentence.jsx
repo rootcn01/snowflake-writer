@@ -17,6 +17,7 @@ export default function OneSentence() {
   const handleComplete = () => {
     if (isValid) {
       dispatch({ type: 'COMPLETE_STEP', payload: 'oneSentence' });
+      dispatch({ type: 'SET_STEP', payload: 1 });
     }
   };
 
@@ -59,15 +60,6 @@ export default function OneSentence() {
             )}
           </div>
         </div>
-
-        {value && isValid && (
-          <div className="mt-4 p-4 bg-bg-primary rounded-md border border-border">
-            <p className="text-xs text-text-secondary mb-2">预览</p>
-            <p className="font-serif text-lg leading-relaxed text-text-primary">
-              {value}
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Tips */}

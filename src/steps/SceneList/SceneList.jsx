@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import { v4 as uuidv4 } from 'uuid';
+import ExportModal from '../../components/ExportModal/ExportModal';
 
 export default function SceneList() {
   const { project, dispatch } = useProject();
   const [scenes, setScenes] = useState(project.steps.scenes || []);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const updateScene = (index, field, value) => {
     const newScenes = [...scenes];
@@ -34,6 +36,7 @@ export default function SceneList() {
   const handleComplete = () => {
     if (scenes.length >= 3) {
       dispatch({ type: 'COMPLETE_STEP', payload: 'sceneList' });
+      setShowExportModal(true);
     }
   };
 
@@ -187,6 +190,11 @@ export default function SceneList() {
           </button>
         )}
       </div>
+
+      {/* Export Modal */}
+      {showExportModal && (
+        <ExportModal onClose={() => setShowExportModal(false)} />
+      )}
     </div>
   );
 }
