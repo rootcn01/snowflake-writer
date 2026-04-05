@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>雪花写作法</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'bg-primary': 'var(--bg-primary)',
+              'bg-secondary': 'var(--bg-secondary)',
+              'bg-tertiary': 'var(--bg-tertiary)',
+              'text-primary': 'var(--text-primary)',
+              'text-secondary': 'var(--text-secondary)',
+              'accent': 'var(--accent)',
+              'accent-hover': 'var(--accent-hover)',
+              'border': 'var(--border)',
+              'success': 'var(--success)',
+              'warning': 'var(--warning)',
+            },
+            fontFamily: {
+              'mono': ['JetBrains Mono', 'monospace'],
+              'serif': ['Noto Serif SC', 'serif'],
+            },
+            maxWidth: {
+              'content': '680px',
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+      :root {
+        --bg-primary: #fafafa;
+        --bg-secondary: #f0f0f0;
+        --bg-tertiary: #e8e8e8;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666666;
+        --accent: #4a9eff;
+        --accent-hover: #6bb3ff;
+        --border: #e0e0e0;
+        --success: #4ade80;
+        --warning: #fbbf24;
+      }
+
+      .dark {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #242424;
+        --bg-tertiary: #2d2d2d;
+        --text-primary: #e8e8e8;
+        --text-secondary: #888888;
+        --accent: #4a9eff;
+        --accent-hover: #6bb3ff;
+        --border: #333333;
+        --success: #4ade80;
+        --warning: #fbbf24;
+      }
+
+      * {
+        transition: background-color 200ms ease-out, border-color 200ms ease-out;
+      }
+
+      body {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+      .font-serif {
+        font-family: 'Noto Serif SC', serif;
+      }
+
+      /* 自定义滚动条 */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--text-secondary);
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-primary);
+      }
+
+      /* Markdown预览样式 */
+      .markdown-preview {
+        font-family: 'Noto Serif SC', serif;
+        font-size: 18px;
+        line-height: 1.8;
+      }
+
+      .markdown-preview h1 {
+        font-size: 1.75em;
+        font-weight: 600;
+        margin-bottom: 0.5em;
+      }
+
+      .markdown-preview h2 {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin-bottom: 0.5em;
+      }
+
+      .markdown-preview p {
+        margin-bottom: 1em;
+      }
+
+      .markdown-preview ul, .markdown-preview ol {
+        margin-left: 1.5em;
+        margin-bottom: 1em;
+      }
+
+      .markdown-preview li {
+        margin-bottom: 0.25em;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-7LRx_ofh.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C_T2VSjJ.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
