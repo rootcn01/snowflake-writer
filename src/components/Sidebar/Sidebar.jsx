@@ -2,9 +2,16 @@ import React, { useEffect } from 'react';
 import { useProject } from '../../store/ProjectContext';
 
 const steps = [
-  { id: 'oneSentence', label: '一句话总结', description: '用15-50字概括你的故事' },
-  { id: 'oneParagraph', label: '一段式总结', description: '五句话讲述完整故事' },
-  { id: 'sceneList', label: '场景列表', description: '列出故事中的所有场景' }
+  { id: 'oneSentence', label: '一句话概括', description: '用15-50字概括你的故事' },
+  { id: 'oneParagraph', label: '一段式概括', description: '多幕讲述完整故事' },
+  { id: 'characters', label: '人物概括', description: '主要角色及定位' },
+  { id: 'storySynopsis', label: '初步大纲', description: '4-5页详细故事摘要' },
+  { id: 'characterDetails', label: '角色宝典', description: '角色详细信息' },
+  { id: 'sceneOutlines', label: '完成大纲', description: '每个场景的4句话描述' },
+  { id: 'sceneList', label: '场景清单', description: '整理所有场景' },
+  { id: 'characterBackstories', label: '人物小传', description: '角色深度背景描述' },
+  { id: 'sceneDescriptions', label: '规划场景', description: '每个场景的详细描述' },
+  { id: 'chapters', label: '初稿', description: '撰写完整故事初稿' }
 ];
 
 export default function Sidebar() {
@@ -52,7 +59,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`fixed top-12 left-0 h-[calc(100vh-48px)] w-56 bg-bg-secondary border-r border-border z-50
-          transform transition-transform duration-250 ease-out
+          transform transition-transform duration-250 ease-out overflow-y-auto
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="p-4 flex flex-col h-full">

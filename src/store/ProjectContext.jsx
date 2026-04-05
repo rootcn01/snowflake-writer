@@ -9,10 +9,18 @@ const initialState = {
     title: '未命名',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    currentStep: 0,
     steps: {
       oneSentence: '',
-      oneParagraph: ['', '', '', '', ''],
-      scenes: []
+      oneParagraph: [{ id: uuidv4(), label: '吸引点', content: '' }],
+      characters: [],
+      storySynopsis: '',
+      characterDetails: [],
+      sceneOutlines: [],
+      scenes: [],
+      characterBackstories: [],
+      sceneDescriptions: [],
+      chapters: []
     },
     meta: {
       completedSteps: []
@@ -22,7 +30,8 @@ const initialState = {
   sidebarOpen: false,
   theme: localStorage.getItem('theme') || 'dark',
   saveStatus: 'saved',
-  toast: null
+  toast: null,
+  showExportModal: false
 };
 
 function projectReducer(state, action) {
@@ -103,6 +112,54 @@ function projectReducer(state, action) {
         }
       };
 
+    case 'UPDATE_CHARACTERS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            characters: action.payload
+          }
+        }
+      };
+
+    case 'UPDATE_STORY_SYNOPSIS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            storySynopsis: action.payload
+          }
+        }
+      };
+
+    case 'UPDATE_CHARACTER_DETAILS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            characterDetails: action.payload
+          }
+        }
+      };
+
+    case 'UPDATE_SCENE_OUTLINES':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            sceneOutlines: action.payload
+          }
+        }
+      };
+
     case 'UPDATE_SCENES':
       return {
         ...state,
@@ -111,6 +168,45 @@ function projectReducer(state, action) {
           steps: { ...state.project.steps, scenes: action.payload }
         }
       };
+
+    case 'UPDATE_CHARACTER_BACKSTORIES':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            characterBackstories: action.payload
+          }
+        }
+      };
+
+    case 'UPDATE_SCENE_DESCRIPTIONS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            sceneDescriptions: action.payload
+          }
+        }
+      };
+
+    case 'UPDATE_CHAPTERS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          steps: {
+            ...state.project.steps,
+            chapters: action.payload
+          }
+        }
+      };
+
+    case 'SET_SHOW_EXPORT_MODAL':
+      return { ...state, showExportModal: action.payload };
 
     default:
       return state;
@@ -142,9 +238,13 @@ export function ProjectProvider({ children }) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (state.project.steps.oneSentence ||
-          state.project.steps.oneParagraph.some(s => s) ||
-          state.project.steps.scenes.length > 0) {
+      const steps = state.project.steps;
+      if (steps.oneSentence ||
+          steps.oneParagraph.some(p => p.content) ||
+          steps.characters.length > 0 ||
+          steps.storySynopsis ||
+          steps.characterDetails.length > 0 ||
+          steps.scenes.length > 0) {
         saveProject();
       }
     }, 2000);

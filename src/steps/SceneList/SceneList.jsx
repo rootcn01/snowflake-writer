@@ -3,7 +3,7 @@ import { useProject } from '../../store/ProjectContext';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function SceneList() {
-  const { project, dispatch } = useProject();
+  const { project, dispatch, showToast } = useProject();
   const [scenes, setScenes] = useState(project.steps.scenes || []);
 
   const updateScene = (index, field, value) => {
@@ -34,6 +34,26 @@ export default function SceneList() {
   const handleComplete = () => {
     if (scenes.length >= 3) {
       dispatch({ type: 'COMPLETE_STEP', payload: 'sceneList' });
+      // Check if all previous steps are complete
+      const requiredSteps = ['oneSentence', 'oneParagraph', 'characters', 'characterDetails'];
+      const missingSteps = requiredSteps.filter(step => !project.meta.completedSteps.includes(step));
+
+      if (missingSteps.length === 0) {
+        // All previous steps complete - show export modal
+        dispatch({ type: 'SET_SHOW_EXPORT_MODAL', payload: true });
+      } else {
+        // Some steps missing - show warning toast
+        const stepNames = {
+          oneSentence: '一句话概括',
+          oneParagraph: '一段式概括',
+          characters: '人物概括',
+          characterDetails: '角色宝典'
+        };
+        const missingNames = missingSteps.map(s => stepNames[s]).join(', ');
+        showToast('warning', `建议完善: ${missingNames}`);
+        // Still allow auto advance to next step
+        dispatch({ type: 'SET_STEP', payload: 7 });
+      }
     }
   };
 
