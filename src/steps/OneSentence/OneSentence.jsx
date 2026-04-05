@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProject } from '../../store/ProjectContext';
+import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 
 export default function OneSentence() {
   const { project, dispatch } = useProject();
@@ -17,6 +18,8 @@ export default function OneSentence() {
   const handleComplete = () => {
     if (isValid) {
       dispatch({ type: 'COMPLETE_STEP', payload: 'oneSentence' });
+      // Auto advance to next step
+      dispatch({ type: 'SET_STEP', payload: 1 });
     }
   };
 
@@ -59,27 +62,17 @@ export default function OneSentence() {
             )}
           </div>
         </div>
-
-        {value && isValid && (
-          <div className="mt-4 p-4 bg-bg-primary rounded-md border border-border">
-            <p className="text-xs text-text-secondary mb-2">预览</p>
-            <p className="font-serif text-lg leading-relaxed text-text-primary">
-              {value}
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Tips */}
-      <div className="card mb-6 bg-accent/5 border-accent/20">
-        <h3 className="text-sm font-medium text-accent mb-2">写作提示</h3>
+      <CollapsibleTips title="写作提示">
         <ul className="text-sm text-text-secondary space-y-1">
           <li>• 这是你故事的DNA</li>
           <li>• 包含主要角色和核心冲突</li>
           <li>• 能回答"如果...会怎样"</li>
           <li>• 参考格式: "当[触发事件]，[主角]必须[行动]，否则[后果]"</li>
         </ul>
-      </div>
+      </CollapsibleTips>
 
       {/* Complete Button */}
       <div className="flex justify-end">
@@ -96,7 +89,6 @@ export default function OneSentence() {
         ) : (
           <button
             onClick={handleComplete}
-            disabled={!isValid}
             className="btn-primary flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

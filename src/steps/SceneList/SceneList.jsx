@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useProject } from '../../store/ProjectContext';
+import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function SceneList() {
-  const { project, dispatch } = useProject();
+  const { project, dispatch, showToast } = useProject();
   const [scenes, setScenes] = useState(project.steps.scenes || []);
 
   const updateScene = (index, field, value) => {
@@ -34,6 +35,26 @@ export default function SceneList() {
   const handleComplete = () => {
     if (scenes.length >= 3) {
       dispatch({ type: 'COMPLETE_STEP', payload: 'sceneList' });
+      // Check if all previous steps are complete
+      const requiredSteps = ['oneSentence', 'oneParagraph', 'characters', 'characterDetails'];
+      const missingSteps = requiredSteps.filter(step => !project.meta.completedSteps.includes(step));
+
+      if (missingSteps.length === 0) {
+        // All previous steps complete - show export modal
+        dispatch({ type: 'SET_SHOW_EXPORT_MODAL', payload: true });
+      } else {
+        // Some steps missing - show warning toast
+        const stepNames = {
+          oneSentence: '一句话概括',
+          oneParagraph: '一段式概括',
+          characters: '人物概括',
+          characterDetails: '角色宝典'
+        };
+        const missingNames = missingSteps.map(s => stepNames[s]).join(', ');
+        showToast('warning', `建议完善: ${missingNames}`);
+        // Still allow auto advance to next step
+        dispatch({ type: 'SET_STEP', payload: 7 });
+      }
     }
   };
 
@@ -42,7 +63,6 @@ export default function SceneList() {
   };
 
   const isCompleted = project.meta.completedSteps.includes('sceneList');
-  const canComplete = scenes.length >= 3;
 
   return (
     <div className="max-w-content mx-auto animate-fade-in">
@@ -152,15 +172,14 @@ export default function SceneList() {
       </div>
 
       {/* Tips */}
-      <div className="card mb-6 bg-accent/5 border-accent/20">
-        <h3 className="text-sm font-medium text-accent mb-2">场景设计提示</h3>
+      <CollapsibleTips title="场景设计提示">
         <ul className="text-sm text-text-secondary space-y-1">
           <li>• 每个场景都应该有明确的POV角色</li>
           <li>• 场景是故事的最小单位，每个场景推动故事发展</li>
           <li>• 考虑场景的对立和冲突</li>
           <li>• 初期至少设计3个核心场景</li>
         </ul>
-      </div>
+      </CollapsibleTips>
 
       {/* Complete Button */}
       <div className="flex justify-end">
@@ -177,7 +196,6 @@ export default function SceneList() {
         ) : (
           <button
             onClick={handleComplete}
-            disabled={!canComplete}
             className="btn-primary flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

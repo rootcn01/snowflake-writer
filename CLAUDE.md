@@ -33,8 +33,15 @@ npm run electron:build  # 构建 Electron 安装包
 - 避免额外依赖
 
 ### 编辑器架构
-`MarkdownEditor` 组件预留 WYSIWYG 升级接口：
+不同步骤使用不同编辑器策略：
+- **Step 4 (初步大纲)**: 纯 Textarea，min-height 400px，支持自动从 Step 2 同步
+- **其他长文本步骤**: MarkdownEditor 组件，支持 edit/preview 切换（预留 WYSIWYG 升级接口）
+
 ```jsx
+// Step 4 直接使用 textarea
+<textarea className="min-h-[400px] ..." />
+
+// 其他步骤使用 MarkdownEditor
 <MarkdownEditor mode="edit" />   // 当前: Textarea
 <MarkdownEditor mode="preview" /> // marked.js 渲染
 ```
@@ -43,18 +50,34 @@ npm run electron:build  # 构建 Electron 安装包
 
 ```
 src/
-├── components/     # UI 组件 (TopBar, Sidebar, Toast...)
-├── steps/          # 写作步骤页面 (OneSentence, OneParagraph, SceneList)
-├── store/          # React Context
-└── utils/          # 工具函数 (export.js)
+├── components/
+│   ├── CollapsibleTips/   # 可折叠提示卡片
+│   ├── ExportModal/       # 导出完成弹窗
+│   ├── MarkdownEditor/    # Markdown编辑器
+│   ├── Sidebar/           # 侧边栏（支持全部10步）
+│   ├── Toast/             # 提示组件
+│   └── TopBar/            # 顶栏
+├── steps/              # 写作步骤页面
+│   ├── CharacterDetails/  # Step 5: 角色宝典
+│   ├── CharacterSummary/  # Step 3: 人物概括
+│   ├── OneParagraph/     # Step 2: 一段式概括（动态1-10幕）
+│   ├── OneSentence/      # Step 1: 一句话概括
+│   ├── SceneList/        # Step 7: 场景清单
+│   ├── SceneOutlines/    # Step 6: 完成大纲
+│   └── StorySynopsis/    # Step 4: 初步大纲
+├── store/               # React Context
+└── utils/              # 工具函数 (export.js)
 ```
 
 ## 迭代计划
 
-- v1.0: MVP (当前) - 3个核心步骤 + 本地存储
-- v1.1: 角色卡片、故事概要、步骤拖拽
-- v1.2: WYSIWYG 编辑器、自定义步骤
-- v2.0: 关系图谱、时间线、AI 辅助
+- v1.0: MVP - 3个核心步骤 + 本地存储 ✅
+- v1.1: 角色卡片(Step3/5)、幕数动态增删、自动跳转 ✅
+- v1.1.1: UI优化 - 雪花图标、头像上传、双栏布局、完成按钮始终可点 ✅
+- v1.2: Step 4初步大纲 ✅、Step 6完成大纲 ✅
+- v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠、进度条弱化 ✅
+- v1.3: Step 8人物小传（Markdown编辑器，每角色一个页面）、Step 9规划场景（每场景详细描述）、Step 10初稿（分章节管理）
+- v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器、项目库
 
 ## 快捷键
 
