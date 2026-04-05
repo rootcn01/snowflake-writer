@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useProject } from '../../store/ProjectContext';
+import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 import { v4 as uuidv4 } from 'uuid';
 
 const characterTypes = [
@@ -237,15 +238,14 @@ export default function CharacterSummary() {
       </div>
 
       {/* Tips */}
-      <div className="card mb-6 bg-accent/5 border-accent/20">
-        <h3 className="text-sm font-medium text-accent mb-2">人物概括提示</h3>
+      <CollapsibleTips title="人物概括提示">
         <ul className="text-sm text-text-secondary space-y-1">
           <li>• 每个角色都应该有明确的目标和阻碍</li>
           <li>• 主角需要有成长弧线（从冲突到感悟）</li>
           <li>• 反派也应该有合理的动机</li>
           <li>• 配角服务于主角的成长</li>
         </ul>
-      </div>
+      </CollapsibleTips>
 
       {/* Complete Button */}
       <div className="flex justify-end">

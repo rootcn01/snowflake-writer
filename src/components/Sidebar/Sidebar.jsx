@@ -123,11 +123,11 @@ export default function Sidebar() {
           </nav>
 
           {/* Progress */}
-          <div className="pt-4 border-t border-border">
-            <div className="text-xs text-text-secondary">
+          <div className="pt-4 border-t border-border group/progress hover:bg-bg-tertiary/50 transition-colors -mx-2 px-2 py-2 rounded-lg">
+            <div className="text-xs text-text-secondary opacity-50 group-hover/progress:opacity-100 transition-opacity">
               进度: {project.meta.completedSteps.length}/{steps.length} 完成
             </div>
-            <div className="mt-2 h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
+            <div className="mt-2 h-1 bg-bg-tertiary rounded-full overflow-hidden opacity-30 group-hover/progress:opacity-100 transition-opacity">
               <div
                 className="h-full bg-success transition-all duration-300"
                 style={{ width: `${(project.meta.completedSteps.length / steps.length) * 100}%` }}

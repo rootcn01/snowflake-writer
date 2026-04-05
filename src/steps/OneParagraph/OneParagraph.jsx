@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProject } from '../../store/ProjectContext';
+import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 import { v4 as uuidv4 } from 'uuid';
 
 const defaultLabels = ['吸引点', '第一幕', '第二幕', '第三幕', '结局'];
@@ -155,8 +156,7 @@ export default function OneParagraph() {
       </div>
 
       {/* Tips */}
-      <div className="card mb-6 bg-accent/5 border-accent/20">
-        <h3 className="text-sm font-medium text-accent mb-2">写作提示</h3>
+      <CollapsibleTips title="写作提示">
         <ul className="text-sm text-text-secondary space-y-1">
           <li>• <strong>吸引点:</strong> 设定主角和世界，引出核心冲突</li>
           <li>• <strong>第一幕:</strong> 主角遭遇事件，被迫采取行动</li>
@@ -164,7 +164,7 @@ export default function OneParagraph() {
           <li>• <strong>第三幕:</strong> 主角绝地反击，准备最终对决</li>
           <li>• <strong>结局:</strong> 高潮过后，恢复平衡</li>
         </ul>
-      </div>
+      </CollapsibleTips>
 
       {/* Complete Button */}
       <div className="flex justify-end">

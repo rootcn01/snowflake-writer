@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProject } from '../../store/ProjectContext';
+import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 import { v4 as uuidv4 } from 'uuid';
 
 const avatarColors = [
@@ -209,15 +210,14 @@ export default function CharacterDetails() {
       </div>
 
       {/* Tips */}
-      <div className="card mb-6 bg-accent/5 border-accent/20">
-        <h3 className="text-sm font-medium text-accent mb-2">角色宝典提示</h3>
+      <CollapsibleTips title="角色宝典提示">
         <ul className="text-sm text-text-secondary space-y-1">
           <li>• 欲望和恐惧是角色的核心驱动力</li>
           <li>• 关键时刻定义角色的转变点</li>
           <li>• 价值观决定角色在压力下的选择</li>
           <li>• 外貌特征可以暗示性格</li>
         </ul>
-      </div>
+      </CollapsibleTips>
 
       {/* Complete Button */}
       <div className="flex justify-end">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProject } from '../../store/ProjectContext';
+import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function SceneList() {
@@ -171,15 +172,14 @@ export default function SceneList() {
       </div>
 
       {/* Tips */}
-      <div className="card mb-6 bg-accent/5 border-accent/20">
-        <h3 className="text-sm font-medium text-accent mb-2">场景设计提示</h3>
+      <CollapsibleTips title="场景设计提示">
         <ul className="text-sm text-text-secondary space-y-1">
           <li>• 每个场景都应该有明确的POV角色</li>
           <li>• 场景是故事的最小单位，每个场景推动故事发展</li>
           <li>• 考虑场景的对立和冲突</li>
           <li>• 初期至少设计3个核心场景</li>
         </ul>
-      </div>
+      </CollapsibleTips>
 
       {/* Complete Button */}
       <div className="flex justify-end">
