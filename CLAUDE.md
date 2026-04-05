@@ -43,17 +43,28 @@ npm run electron:build  # 构建 Electron 安装包
 
 ```
 src/
-├── components/     # UI 组件 (TopBar, Sidebar, Toast...)
-├── steps/          # 写作步骤页面 (OneSentence, OneParagraph, SceneList)
-├── store/          # React Context
-└── utils/          # 工具函数 (export.js)
+├── components/
+│   ├── ExportModal/    # 导出完成弹窗
+│   ├── MarkdownEditor/ # Markdown编辑器
+│   ├── Sidebar/        # 侧边栏（支持全部10步）
+│   ├── Toast/          # 提示组件
+│   └── TopBar/         # 顶栏
+├── steps/              # 写作步骤页面
+│   ├── CharacterDetails/  # Step 5: 角色宝典
+│   ├── CharacterSummary/  # Step 3: 人物概括
+│   ├── OneParagraph/     # Step 2: 一段式概括（动态1-10幕）
+│   ├── OneSentence/      # Step 1: 一句话概括
+│   └── SceneList/        # Step 7: 场景清单
+├── store/               # React Context
+└── utils/              # 工具函数 (export.js)
 ```
 
 ## 迭代计划
 
-- v1.0: MVP (当前) - 3个核心步骤 + 本地存储
-- v1.1: 角色卡片、故事概要、步骤拖拽
-- v1.2: WYSIWYG 编辑器、自定义步骤
+- v1.0: MVP - 3个核心步骤 + 本地存储 ✅
+- v1.1: 角色卡片(Step3/5)、幕数动态增删、自动跳转 ✅
+- v1.2: Step 4初步大纲、Step 6完成大纲、Step 8人物小传、Step 9规划场景、Step 10初稿
+- v1.3: WYSIWYG 编辑器、自定义步骤
 - v2.0: 关系图谱、时间线、AI 辅助
 
 ## 快捷键
