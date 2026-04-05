@@ -69,7 +69,7 @@ export default function Sidebar() {
               {project.title || '未命名'}
             </h2>
             <p className="text-xs text-text-secondary mt-1">
-              雪花写作法项目
+              项目
             </p>
           </div>
 

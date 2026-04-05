@@ -63,11 +63,10 @@ export default function TopBar() {
           className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-bg-tertiary transition-colors"
           title="切换侧边栏 (Ctrl+\\)"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          <svg className="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L9.5 8.5L3 12l6.5 3.5L12 22l2.5-6.5L21 12l-6.5-3.5L12 2zm0 4.5l1.2 3.2L17 10l-3.8 2.2L12 17l-1.2-3.2L7 10l3.8-2.2L12 6.5z"/>
           </svg>
         </button>
-        <span className="text-sm text-text-secondary hidden sm:inline">雪花写作法</span>
       </div>
 
       {/* Center: Project Title */}

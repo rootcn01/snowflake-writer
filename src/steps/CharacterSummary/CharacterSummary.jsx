@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -7,6 +7,11 @@ const characterTypes = [
   { value: 'antagonist', label: '反派' },
   { value: 'mentor', label: '导师' },
   { value: 'supporting', label: '配角' }
+];
+
+const avatarColors = [
+  '#4a9eff', '#ef4a9e', '#4aef9e', '#efeb4a', '#9e4aef', '#4aefef',
+  '#ff6b6b', '#6bff6b', '#6b6bff', '#ff9e6b', '#9e6bff', '#6bff9e'
 ];
 
 export default function CharacterSummary() {
@@ -21,13 +26,16 @@ export default function CharacterSummary() {
   };
 
   const addCharacter = () => {
+    const colorIndex = characters.length % avatarColors.length;
     const newCharacter = {
       id: uuidv4(),
       name: '',
       type: 'protagonist',
       goal: '',
       conflict: '',
-      epiphany: ''
+      epiphany: '',
+      avatarColor: avatarColors[colorIndex],
+      avatar: null
     };
     const newCharacters = [...characters, newCharacter];
     setCharacters(newCharacters);
@@ -36,6 +44,27 @@ export default function CharacterSummary() {
 
   const deleteCharacter = (index) => {
     const newCharacters = characters.filter((_, i) => i !== index);
+    setCharacters(newCharacters);
+    dispatch({ type: 'UPDATE_CHARACTERS', payload: newCharacters });
+  };
+
+  const handleAvatarUpload = (index, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const newCharacters = [...characters];
+      newCharacters[index] = { ...newCharacters[index], avatar: event.target.result };
+      setCharacters(newCharacters);
+      dispatch({ type: 'UPDATE_CHARACTERS', payload: newCharacters });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAvatarColorChange = (index, color) => {
+    const newCharacters = [...characters];
+    newCharacters[index] = { ...newCharacters[index], avatarColor: color };
     setCharacters(newCharacters);
     dispatch({ type: 'UPDATE_CHARACTERS', payload: newCharacters });
   };
@@ -70,8 +99,46 @@ export default function CharacterSummary() {
           <div key={character.id} className="card group relative">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                  <span className="text-accent font-medium">{character.name ? character.name[0] : '?'}</span>
+                <div className="relative group/avatar">
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-transparent hover:border-accent transition-colors"
+                    style={{ backgroundColor: character.avatar ? 'transparent' : (character.avatarColor || '#4a9eff') }}
+                    onClick={() => document.getElementById(`avatar-upload-${index}`)?.click()}
+                  >
+                    {character.avatar ? (
+                      <img src={character.avatar} alt={character.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-white font-medium text-lg">
+                        {character.name ? character.name[0].toUpperCase() : (index + 1)}
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    id={`avatar-upload-${index}`}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleAvatarUpload(index, e)}
+                  />
+                  {/* Color picker overlay on hover */}
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-bg-tertiary rounded-full border border-border flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer"
+                    onClick={() => document.getElementById(`color-picker-${index}`)?.click()}>
+                    <svg className="w-3 h-3 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                  </div>
+                  <div className="hidden">
+                    <div id={`color-picker-${index}`} className="flex gap-1 p-2 bg-bg-secondary border border-border rounded-lg shadow-lg">
+                      {avatarColors.map(color => (
+                        <button
+                          key={color}
+                          className={`w-5 h-5 rounded-full border-2 ${character.avatarColor === color ? 'border-white' : 'border-transparent'}`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => handleAvatarColorChange(index, color)}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <input
                   type="text"
@@ -195,7 +262,6 @@ export default function CharacterSummary() {
         ) : (
           <button
             onClick={handleComplete}
-            disabled={!canComplete}
             className="btn-primary flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

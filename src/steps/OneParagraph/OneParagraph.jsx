@@ -181,7 +181,6 @@ export default function OneParagraph() {
         ) : (
           <button
             onClick={handleComplete}
-            disabled={!allFilled || !allValid}
             className="btn-primary flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
