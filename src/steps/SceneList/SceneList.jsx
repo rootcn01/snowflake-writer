@@ -158,20 +158,6 @@ export default function SceneList() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>场景数量</span>
-          <span>{scenes.length} 个 {scenes.length < 3 && `(最少需要3个)`}</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className={`h-full transition-all duration-300 ${scenes.length >= 3 ? 'bg-success' : 'bg-warning'}`}
-            style={{ width: `${Math.min((scenes.length / 10) * 100, 100)}%` }}
-          />
-        </div>
-      </div>
-
       {/* Tips */}
       <CollapsibleTips title="场景设计提示">
         <ul className="text-sm text-text-secondary space-y-1">

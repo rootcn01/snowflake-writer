@@ -218,20 +218,6 @@ export default function Chapters() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>已完成章节</span>
-          <span>{chapters.filter(c => localContent[c.id]).length} / {chapters.length} 个章节</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${chapters.length > 0 ? (chapters.filter(c => localContent[c.id]).length / chapters.length) * 100 : 0}%` }}
-          />
-        </div>
-      </div>
-
       {/* Tips */}
       <CollapsibleTips title="初稿撰写提示">
         双击章节标题可快速重命名。从Step 9场景生成会自动填充场景描述作为草稿。写作过程中随时自动保存，无需担心丢失。

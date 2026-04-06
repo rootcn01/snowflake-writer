@@ -3,7 +3,7 @@ import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 
 export default function StorySynopsis() {
-  const { project, dispatch, showToast } = useProject();
+  const { project, dispatch } = useProject();
   const [synopsis, setSynopsis] = useState(project.steps.storySynopsis || '');
   const [initialized, setInitialized] = useState(false);
 
@@ -22,7 +22,6 @@ export default function StorySynopsis() {
         expanded = `# 故事概要\n\n基于"一段式概括"扩展的详细故事摘要。\n\n---\n\n${expanded}\n\n---\n\n## 扩展说明\n\n请在此处扩展为4-5页的详细故事描述，包括：\n- 故事的起承转合\n- 主要情节点的细节\n- 角色在每个阶段的变化\n- 伏笔与呼应`;
         setSynopsis(expanded);
         dispatch({ type: 'UPDATE_STORY_SYNOPSIS', payload: expanded });
-        showToast('success', '已同步一段式概括');
       }
     }
     setInitialized(true);
@@ -61,20 +60,6 @@ export default function StorySynopsis() {
                      p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
                      placeholder-text-secondary"
         />
-      </div>
-
-      {/* Word Count */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>字数统计</span>
-          <span>{synopsis.length} 字符</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${Math.min((synopsis.length / 10000) * 100, 100)}%` }}
-          />
-        </div>
       </div>
 
       {/* Tips */}

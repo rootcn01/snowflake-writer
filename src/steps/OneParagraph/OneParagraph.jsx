@@ -74,7 +74,7 @@ export default function OneParagraph() {
   return (
     <div className="max-w-content mx-auto animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-text-primary mb-2">二段式总结</h1>
+        <h1 className="text-2xl font-semibold text-text-primary mb-2">一段式概括</h1>
         <p className="text-text-secondary">用多幕讲述你的完整故事。每一幕用30-80字描述。</p>
       </div>
 
@@ -140,20 +140,6 @@ export default function OneParagraph() {
           </button>
         </div>
       )}
-
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>完成进度</span>
-          <span>{values.filter(v => v.content.length >= 30).length}/{values.length} 幕</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${(values.filter(v => v.content.length >= 30).length / values.length) * 100}%` }}
-          />
-        </div>
-      </div>
 
       {/* Tips */}
       <CollapsibleTips title="写作提示">

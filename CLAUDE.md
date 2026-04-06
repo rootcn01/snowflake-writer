@@ -80,32 +80,36 @@ src/
 - v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠/灰色细线 ✅
 - v1.3: Step 8人物小传 ✅、Step 9规划场景 ✅、沉浸感UI优化 ✅
 - v1.4: Step 10初稿 - 分章节管理（左侧章节列表可拖拽排序+右侧编辑器） ✅
-- v1.4.1: 沉浸感优化 - Tips极简一行、Step 5/8/9/10 TopBar下拉选择器（移除左侧面板）
+- v1.4.1: 沉浸感优化 - Tips极简一行、Step 5/8/9/10 TopBar下拉选择器（移除左侧面板） ✅
+- v1.4.2: Step 3标签化+筛选+自定义备注、标题统一、Step 2/4静默同步、Step 6@提及风格、进度条移除 ✅
 - v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器、项目库
 
-## 版本完成工作流
+## 版本发布流程
 
-每次版本迭代完成时，必须执行以下操作：
+1. **开发 & 测试**
+   - 开发在 feature 分支进行
+   - 测试验证完成后合并到 main
 
-1. **更新SPEC文档** (`C:\Users\lotus\.claude\plans\cosmic-noodling-crane.md`)
-   - 将完成的特性标记为 `[x]`
-   - 更新版本号和状态
-
-2. **更新README.md**
-   - 将完成的特性移至"已完成"部分
-   - 更新迭代计划
-   - 更新项目结构（如有新文件）
-
-3. **更新CLAUDE.md**
-   - 同步迭代计划
-   - 如有架构变更，更新架构决策说明
-
-4. **Git提交并推送**
+2. **Git 提交并推送**
    ```bash
    git add .
-   git commit -m "chore: v1.x.x - 完成版本特性"
+   git commit -m "feat: v1.x.x - 版本特性"
    git push
    ```
+
+3. **本地构建**
+   ```bash
+   npm run electron:build
+   ```
+
+4. **发布 Release**
+   - 在 GitHub 创建 tag：`git tag v1.x.x && git push origin v1.x.x`
+   - 打包 `release/win-unpacked/` 为 zip
+   - 上传到 GitHub Releases
+
+5. **本地清理**
+   - 删除 `release/` 目录节省空间
+   - 旧版本从 GitHub 下载
 
 ## 快捷键
 

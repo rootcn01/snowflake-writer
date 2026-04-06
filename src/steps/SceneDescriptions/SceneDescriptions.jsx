@@ -133,20 +133,6 @@ export default function SceneDescriptions() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>已编写描述</span>
-          <span>{Object.keys(localContent).filter(k => localContent[k]).length} / {scenes.length} 个场景</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${scenes.length > 0 ? (Object.keys(localContent).filter(k => localContent[k]).length / scenes.length) * 100 : 0}%` }}
-          />
-        </div>
-      </div>
-
       {/* Tips */}
       <CollapsibleTips title="场景描述提示">
         场景是故事的最小单位，每个场景推动故事发展。详细描写场景的环境、动作和对话，通过感官细节让读者身临其境。

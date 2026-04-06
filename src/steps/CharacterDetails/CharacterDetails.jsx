@@ -155,20 +155,6 @@ export default function CharacterDetails() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>角色数量</span>
-          <span>{characterDetails.length} 个</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${Math.min((characterDetails.length / 5) * 100, 100)}%` }}
-          />
-        </div>
-      </div>
-
       {/* Tips */}
       <CollapsibleTips title="角色宝典提示">
         欲望和恐惧是角色的核心驱动力。关键时刻定义角色的转变点。价值观决定角色在压力下的选择。

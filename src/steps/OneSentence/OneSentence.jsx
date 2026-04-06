@@ -32,7 +32,7 @@ export default function OneSentence() {
   return (
     <div className="max-w-content mx-auto animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-text-primary mb-2">一步总结</h1>
+        <h1 className="text-2xl font-semibold text-text-primary mb-2">一句话概括</h1>
         <p className="text-text-secondary">用一句话概括你的整个故事。</p>
       </div>
 

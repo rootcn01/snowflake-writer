@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,7 +18,7 @@ export default function SceneOutlines() {
   const addSceneOutline = () => {
     const newOutline = {
       id: uuidv4(),
-      characterIds: characters.length > 0 ? [characters[0].id] : [],
+      characterIds: [],
       time: '',
       location: '',
       goal: '',
@@ -35,18 +35,18 @@ export default function SceneOutlines() {
     dispatch({ type: 'UPDATE_SCENE_OUTLINES', payload: newOutlines });
   };
 
-  const handleCharacterToggle = (outlineIndex, characterId) => {
+  const handleCharacterAdd = (outlineIndex, characterId) => {
     const outline = sceneOutlines[outlineIndex];
     const currentIds = outline.characterIds || [];
-    let newIds;
-
-    if (currentIds.includes(characterId)) {
-      newIds = currentIds.filter(id => id !== characterId);
-    } else {
-      newIds = [...currentIds, characterId];
+    if (!currentIds.includes(characterId)) {
+      updateSceneOutline(outlineIndex, 'characterIds', [...currentIds, characterId]);
     }
+  };
 
-    updateSceneOutline(outlineIndex, 'characterIds', newIds);
+  const handleCharacterRemove = (outlineIndex, characterId) => {
+    const outline = sceneOutlines[outlineIndex];
+    const currentIds = outline.characterIds || [];
+    updateSceneOutline(outlineIndex, 'characterIds', currentIds.filter(id => id !== characterId));
   };
 
   const handleComplete = () => {
@@ -70,6 +70,130 @@ export default function SceneOutlines() {
   const getCharacterColor = (characterId) => {
     const character = characters.find(c => c.id === characterId);
     return character?.avatarColor || '#4a9eff';
+  };
+
+  // @ mention component for character selection
+  const MentionInput = ({ outlineIndex, selectedIds }) => {
+    const [inputValue, setInputValue] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const inputRef = useRef(null);
+    const wrapperRef = useRef(null);
+
+    const selectedIdSet = new Set(selectedIds || []);
+    const availableCharacters = characters.filter(c => !selectedIdSet.has(c.id));
+    const filteredCharacters = inputValue.startsWith('@')
+      ? availableCharacters.filter(c =>
+          c.name.toLowerCase().includes(inputValue.slice(1).toLowerCase())
+        )
+      : availableCharacters;
+
+    const handleInputChange = (e) => {
+      const value = e.target.value;
+      setInputValue(value);
+      if (value.startsWith('@')) {
+        setShowDropdown(true);
+      } else {
+        setShowDropdown(false);
+      }
+    };
+
+    const handleInputFocus = () => {
+      if (inputValue.startsWith('@')) {
+        setShowDropdown(true);
+      }
+    };
+
+    const handleSelectCharacter = (charId) => {
+      handleCharacterAdd(outlineIndex, charId);
+      setInputValue('');
+      setShowDropdown(false);
+      inputRef.current?.focus();
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowDropdown(false);
+        setInputValue('');
+      }
+      if (e.key === '@') {
+        e.preventDefault();
+        setInputValue('@');
+        setShowDropdown(true);
+      }
+    };
+
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+          setShowDropdown(false);
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    return (
+      <div className="relative" ref={wrapperRef}>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {(selectedIds || []).map(id => (
+            <span
+              key={id}
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white"
+              style={{ backgroundColor: getCharacterColor(id) }}
+            >
+              @{getCharacterName(id)}
+              <button
+                onClick={() => handleCharacterRemove(outlineIndex, id)}
+                className="ml-1 hover:bg-white/20 rounded-full p-0.5"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </span>
+          ))}
+        </div>
+        <div className="relative">
+          <input
+            ref={inputRef}
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={handleInputFocus}
+            onKeyDown={handleKeyDown}
+            placeholder="输入@选择角色"
+            className="w-full bg-bg-tertiary border border-border rounded-md px-3 py-2 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent"
+          />
+          {showDropdown && filteredCharacters.length > 0 && (
+            <div className="absolute z-10 mt-1 w-full bg-bg-secondary border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+              {filteredCharacters.map(char => (
+                <button
+                  key={char.id}
+                  onClick={() => handleSelectCharacter(char.id)}
+                  className="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary flex items-center gap-2"
+                >
+                  <span
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                    style={{ backgroundColor: char.avatarColor || '#4a9eff' }}
+                  >
+                    {char.name ? char.name[0].toUpperCase() : '?'}
+                  </span>
+                  {char.name || '未命名角色'}
+                </button>
+              ))}
+            </div>
+          )}
+          {showDropdown && inputValue.startsWith('@') && filteredCharacters.length === 0 && (
+            <div className="absolute z-10 mt-1 w-full bg-bg-secondary border border-border rounded-md shadow-lg px-3 py-2 text-sm text-text-secondary">
+              {availableCharacters.length === 0 ? '所有角色已选择' : '未找到匹配角色'}
+            </div>
+          )}
+        </div>
+        {characters.length === 0 && (
+          <p className="text-xs text-text-secondary italic mt-1">请先在Step 3添加角色</p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -100,36 +224,10 @@ export default function SceneOutlines() {
               </button>
             </div>
 
-            {/* Character Tags */}
+            {/* Character Tags with @ mention */}
             <div className="mb-4">
               <label className="block text-xs font-medium text-text-secondary mb-2">关联角色</label>
-              <div className="flex flex-wrap gap-2">
-                {characters.map(char => {
-                  const isSelected = (outline.characterIds || []).includes(char.id);
-                  return (
-                    <button
-                      key={char.id}
-                      onClick={() => handleCharacterToggle(index, char.id)}
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all
-                        ${isSelected
-                          ? 'text-white'
-                          : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
-                        }`}
-                      style={isSelected ? { backgroundColor: getCharacterColor(char.id) } : {}}
-                    >
-                      {isSelected && (
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                      {char.name || '未命名角色'}
-                    </button>
-                  );
-                })}
-                {characters.length === 0 && (
-                  <span className="text-xs text-text-secondary italic">请先在Step 3添加角色</span>
-                )}
-              </div>
+              <MentionInput outlineIndex={index} selectedIds={outline.characterIds} />
             </div>
 
             {/* 4-sentence format */}
@@ -213,20 +311,6 @@ export default function SceneOutlines() {
           </svg>
           添加场景大纲
         </button>
-      </div>
-
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>场景大纲数量</span>
-          <span>{sceneOutlines.length} 个</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${Math.min((sceneOutlines.length / 10) * 100, 100)}%` }}
-          />
-        </div>
       </div>
 
       {/* Complete Button */}

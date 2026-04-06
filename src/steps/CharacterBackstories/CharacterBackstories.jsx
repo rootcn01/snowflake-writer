@@ -141,20 +141,6 @@ export default function CharacterBackstories() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-text-secondary mb-2">
-          <span>已编写小传</span>
-          <span>{Object.keys(localContent).filter(k => localContent[k]).length} / {characters.length} 个角色</span>
-        </div>
-        <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent transition-all duration-300"
-            style={{ width: `${characters.length > 0 ? (Object.keys(localContent).filter(k => localContent[k]).length / characters.length) * 100 : 0}%` }}
-          />
-        </div>
-      </div>
-
       {/* Tips */}
       <CollapsibleTips title="人物小传提示">
         人物小传是角色的深度背景故事，包括成长经历、性格形成原因、重要人生节点，以及角色与其他角色的关系纠葛。
