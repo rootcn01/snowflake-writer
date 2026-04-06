@@ -18,6 +18,8 @@ export default function OneParagraph() {
     newValues[index] = { ...newValues[index], content };
     setValues(newValues);
     dispatch({ type: 'UPDATE_ONE_PARAGRAPH', payload: newValues });
+    // 同步到 Step 4，保持扩展说明不变
+    dispatch({ type: 'SYNC_STORY_SYNOPSIS', payload: newValues });
   };
 
   const handleLabelChange = (index, label) => {
@@ -25,6 +27,8 @@ export default function OneParagraph() {
     newValues[index] = { ...newValues[index], label };
     setValues(newValues);
     dispatch({ type: 'UPDATE_ONE_PARAGRAPH', payload: newValues });
+    // 同步到 Step 4，保持扩展说明不变
+    dispatch({ type: 'SYNC_STORY_SYNOPSIS', payload: newValues });
   };
 
   const addParagraph = () => {
@@ -38,6 +42,8 @@ export default function OneParagraph() {
     const newValues = [...values, newParagraph];
     setValues(newValues);
     dispatch({ type: 'UPDATE_ONE_PARAGRAPH', payload: newValues });
+    // 同步到 Step 4，保持扩展说明不变
+    dispatch({ type: 'SYNC_STORY_SYNOPSIS', payload: newValues });
   };
 
   const removeParagraph = (index) => {
@@ -45,6 +51,8 @@ export default function OneParagraph() {
     const newValues = values.filter((_, i) => i !== index);
     setValues(newValues);
     dispatch({ type: 'UPDATE_ONE_PARAGRAPH', payload: newValues });
+    // 同步到 Step 4，保持扩展说明不变
+    dispatch({ type: 'SYNC_STORY_SYNOPSIS', payload: newValues });
   };
 
   const charCounts = values.map(v => v.content.length);

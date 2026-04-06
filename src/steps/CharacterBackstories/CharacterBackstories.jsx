@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 
@@ -9,10 +9,44 @@ const avatarColors = [
 
 export default function CharacterBackstories() {
   const { project, dispatch, showToast } = useProject();
-  const characters = project.steps.characters || [];
   const [backstories, setBackstories] = useState(project.steps.characterBackstories || []);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [localContent, setLocalContent] = useState({});
+
+  // Sync backstories with Step 3 characters - auto-create entries for new characters
+  const syncWithStep3 = useCallback(() => {
+    const step3Characters = project.steps.characters || [];
+    const currentBackstories = project.steps.characterBackstories || [];
+    let hasChanges = false;
+    const newBackstories = [...currentBackstories];
+
+    step3Characters.forEach((char) => {
+      const exists = newBackstories.some(b => b.characterId === char.id);
+      if (!exists) {
+        // Auto-create entry for this character
+        newBackstories.push({
+          characterId: char.id,
+          content: ''
+        });
+        hasChanges = true;
+      }
+    });
+
+    // Remove backstories for characters that no longer exist in Step 3
+    const filteredBackstories = newBackstories.filter(b =>
+      step3Characters.some(c => c.id === b.characterId)
+    );
+
+    if (hasChanges || filteredBackstories.length !== newBackstories.length) {
+      setBackstories(filteredBackstories);
+      dispatch({ type: 'UPDATE_CHARACTER_BACKSTORIES', payload: filteredBackstories });
+    }
+  }, [project.steps.characters, project.steps.characterBackstories, dispatch]);
+
+  // Sync on mount and when characters change
+  useEffect(() => {
+    syncWithStep3();
+  }, [syncWithStep3]);
 
   // Initialize local content from existing backstories
   useEffect(() => {
@@ -25,7 +59,8 @@ export default function CharacterBackstories() {
 
   // Set up TopBar selector
   useEffect(() => {
-    const items = characters.map((c, i) => ({
+    const step3Characters = project.steps.characters || [];
+    const items = step3Characters.map((c, i) => ({
       id: c.id,
       name: c.name || '未命名',
       index: i,
@@ -37,15 +72,15 @@ export default function CharacterBackstories() {
         label: '角色',
         icon: '👤',
         items,
-        onAdd: null, // No add for backstories, they come from Step 3
+        onAdd: null, // Cannot add directly - must come from Step 3
         onSelect: (id) => {
-          const idx = characters.findIndex(c => c.id === id);
+          const idx = step3Characters.findIndex(c => c.id === id);
           if (idx >= 0) setSelectedIndex(idx);
         }
       }
     });
     return () => dispatch({ type: 'SET_TOPBAR_SELECTOR', payload: null });
-  }, [characters, localContent, dispatch]);
+  }, [project.steps.characters, localContent, dispatch]);
 
   const getBackstoryContent = (characterId) => {
     return localContent[characterId] || '';
@@ -85,7 +120,8 @@ export default function CharacterBackstories() {
   };
 
   const isCompleted = project.meta.completedSteps.includes('characterBackstories');
-  const selectedCharacter = characters[selectedIndex];
+  const step3Characters = project.steps.characters || [];
+  const selectedCharacter = step3Characters[selectedIndex];
   const selectedBackstoryContent = selectedCharacter ? getBackstoryContent(selectedCharacter.id) : '';
 
   return (
@@ -114,7 +150,7 @@ export default function CharacterBackstories() {
                     {selectedCharacter.name || '新角色'}
                   </h2>
                   <p className="text-xs text-text-secondary">
-                    {selectedCharacter.type || '角色'} - 人物小传
+                    人物小传 - 数据同步自Step 3
                   </p>
                 </div>
               </div>
@@ -134,8 +170,8 @@ export default function CharacterBackstories() {
               <svg className="w-12 h-12 mx-auto text-text-secondary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <p className="text-text-secondary">使用顶栏下拉选择器选择角色</p>
-              <p className="text-xs text-text-secondary mt-1">或先在Step 3添加角色</p>
+              <p className="text-text-secondary">请先在Step 3创建角色</p>
+              <p className="text-xs text-text-secondary mt-1">角色数据将从Step 3自动同步</p>
             </div>
           )}
         </div>

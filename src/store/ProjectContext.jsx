@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { syncStep2ToStep4 } from '../utils/markdownUtils';
 
 const ProjectContext = createContext(null);
 
@@ -124,6 +125,23 @@ function projectReducer(state, action) {
           }
         }
       };
+
+    case 'SYNC_STORY_SYNOPSIS':
+      // 将 Step 2 内容同步到 Step 4，保持扩展说明不变
+      if (action.payload) {
+        const merged = syncStep2ToStep4(action.payload, state.project.steps.storySynopsis);
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            steps: {
+              ...state.project.steps,
+              storySynopsis: merged
+            }
+          }
+        };
+      }
+      return state;
 
     case 'UPDATE_STORY_SYNOPSIS':
       return {

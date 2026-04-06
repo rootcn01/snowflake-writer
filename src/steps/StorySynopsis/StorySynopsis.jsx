@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
+import { parseSynopsisMarkdown } from '../../utils/markdownUtils';
 
 export default function StorySynopsis() {
   const { project, dispatch } = useProject();
   const [synopsis, setSynopsis] = useState(project.steps.storySynopsis || '');
   const [initialized, setInitialized] = useState(false);
+  const [outlineOpen, setOutlineOpen] = useState(true);
+  const isEditingRef = useRef(false);
 
-  // Auto-generate from Step 2 on first entry
+  // Sync with project changes
+  useEffect(() => {
+    setSynopsis(project.steps.storySynopsis || '');
+  }, [project.steps.storySynopsis]);
+
+  // Auto-generate from Step 2 on first entry (only when empty)
   useEffect(() => {
     if (!initialized && !project.steps.storySynopsis && project.steps.oneParagraph.some(p => p.content)) {
       const paragraphs = project.steps.oneParagraph || [];
@@ -27,9 +35,23 @@ export default function StorySynopsis() {
     setInitialized(true);
   }, [initialized, project.steps.storySynopsis, project.steps.oneParagraph, dispatch]);
 
+  // Sync from external Step 2 changes (when user is not actively editing)
+  useEffect(() => {
+    if (initialized && !isEditingRef.current) {
+      const externalSynopsis = project.steps.storySynopsis || '';
+      if (externalSynopsis !== synopsis) {
+        setSynopsis(externalSynopsis);
+      }
+    }
+  }, [project.steps.storySynopsis, initialized]);
+
   const handleChange = (value) => {
+    isEditingRef.current = true;
     setSynopsis(value);
     dispatch({ type: 'UPDATE_STORY_SYNOPSIS', payload: value });
+    setTimeout(() => {
+      isEditingRef.current = false;
+    }, 500);
   };
 
   const handleComplete = () => {
@@ -43,6 +65,51 @@ export default function StorySynopsis() {
 
   const isCompleted = project.meta.completedSteps.includes('storySynopsis');
 
+  // Parse outline structure from markdown
+  const extractOutlineStructure = () => {
+    const lines = synopsis.split('\n');
+    const structure = [];
+    let currentSection = null;
+    let currentSubsections = [];
+
+    lines.forEach((line, index) => {
+      if (line.match(/^#+\s/)) {
+        // Save previous section
+        if (currentSection) {
+          structure.push({
+            level: currentSection.level,
+            title: currentSection.title,
+            content: currentSection.content,
+            lineIndex: currentSection.lineIndex
+          });
+        }
+        const match = line.match(/^(#+)\s+(.*)/);
+        if (match) {
+          currentSection = {
+            level: match[1].length,
+            title: match[2],
+            content: '',
+            lineIndex: index
+          };
+        }
+      }
+    });
+
+    // Add last section
+    if (currentSection) {
+      structure.push({
+        level: currentSection.level,
+        title: currentSection.title,
+        content: currentSection.content,
+        lineIndex: currentSection.lineIndex
+      });
+    }
+
+    return structure;
+  };
+
+  const outlineStructure = extractOutlineStructure();
+
   return (
     <div className="max-w-content mx-auto animate-fade-in">
       <div className="mb-8">
@@ -50,16 +117,75 @@ export default function StorySynopsis() {
         <p className="text-text-secondary">扩展为4-5页的详细故事摘要。</p>
       </div>
 
-      {/* Editor - Pure edit mode */}
-      <div className="card mb-6">
-        <textarea
-          value={synopsis}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="在此处编写详细的故事大纲..."
-          className="w-full h-full min-h-[400px] bg-bg-tertiary text-text-primary font-mono text-base
-                     p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
-                     placeholder-text-secondary"
-        />
+      {/* Split Layout: Left Outline Panel + Right Editor */}
+      <div className="flex gap-4 mb-6" style={{ minHeight: '500px' }}>
+        {/* Left: Collapsible Outline Panel */}
+        <div className={`flex-shrink-0 transition-all duration-250 ${outlineOpen ? 'w-64' : 'w-0'}`}>
+          {outlineOpen && (
+            <div className="card h-full overflow-hidden flex flex-col">
+              <div className="p-3 border-b border-border flex justify-between items-center">
+                <span className="text-sm font-medium text-text-primary">大纲</span>
+                <button
+                  onClick={() => setOutlineOpen(false)}
+                  className="w-6 h-6 flex items-center justify-center rounded text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors"
+                  title="折叠大纲"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-2">
+                {outlineStructure.length === 0 ? (
+                  <div className="text-center text-text-secondary text-sm py-4">
+                    暂无大纲结构
+                  </div>
+                ) : (
+                  <div className="space-y-0">
+                    {outlineStructure.map((item, index) => (
+                      <div
+                        key={index}
+                        className="text-sm py-1 px-2 rounded cursor-pointer hover:bg-bg-tertiary/50 transition-colors truncate"
+                        style={{ paddingLeft: `${(item.level - 1) * 12 + 8}px` }}
+                        title={item.title}
+                      >
+                        <span className="text-text-secondary mr-1">{item.level === 1 ? '■' : '●'}</span>
+                        <span className="text-text-primary">{item.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Toggle Outline Button (when closed) */}
+        {!outlineOpen && (
+          <button
+            onClick={() => setOutlineOpen(true)}
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded bg-bg-tertiary border border-border text-text-secondary hover:text-text-primary hover:bg-bg-secondary transition-colors"
+            title="展开大纲"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+
+        {/* Right: Editor */}
+        <div className="flex-1">
+          <div className="card">
+            <textarea
+              value={synopsis}
+              onChange={(e) => handleChange(e.target.value)}
+              placeholder="在此处编写详细的故事大纲..."
+              className="w-full h-full min-h-[450px] bg-bg-tertiary text-text-primary font-mono text-base
+                         p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
+                         placeholder-text-secondary"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Tips */}
@@ -69,6 +195,7 @@ export default function StorySynopsis() {
           <li>• 明确每个主要角色的动机和行动</li>
           <li>• 铺设关键伏笔，为后续情节埋下种子</li>
           <li>• 一个完整的大纲应该可以扩展为4-5页的文档</li>
+          <li>• 左侧大纲面板可折叠/展开，方便导航</li>
         </ul>
       </CollapsibleTips>
 
