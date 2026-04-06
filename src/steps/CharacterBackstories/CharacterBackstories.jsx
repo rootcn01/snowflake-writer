@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
+import TiptapEditor from '../../components/TiptapEditor';
 
 const avatarColors = [
   '#4a9eff', '#ef4a9e', '#4aef9e', '#efeb4a', '#9e4aef', '#4aefef',
@@ -155,14 +156,11 @@ export default function CharacterBackstories() {
                 </div>
               </div>
 
-              <textarea
+              <TiptapEditor
                 value={selectedBackstoryContent}
-                onChange={(e) => handleContentChange(selectedCharacter.id, e.target.value)}
+                onChange={(val) => handleContentChange(selectedCharacter.id, val)}
                 placeholder={`为 ${selectedCharacter.name || '此角色'} 编写详细的人物小传...\n\n可以包括：\n- 成长背景\n- 性格形成原因\n- 重要人生经历\n- 与其他角色的关系\n- 内心世界描写`}
-                className="w-full h-full min-h-[400px] bg-bg-tertiary text-text-primary font-serif text-base leading-relaxed
-                           p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
-                           placeholder-text-secondary"
-                style={{ fontFamily: '"Source Han Serif CN", "Source Han Serif", "Noto Serif SC", Georgia, serif' }}
+                className="min-h-[400px]"
               />
             </div>
           ) : (

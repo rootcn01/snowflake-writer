@@ -13,13 +13,13 @@
 - **Step 1: 一句话概括** - 用 15-50 字概括整个故事
 - **Step 2: 一段式概括** - 动态 1-10 幕结构，每幕 30-80 字，与 Step 4 实时同步
 - **Step 3: 人物概括** - 左右分栏布局（角色列表 | 角色详情），支持标签筛选、自定义头像
-- **Step 4: 初步大纲** - 左侧可折叠大纲浮层（显示章节结构），与 Step 2 双向同步
+- **Step 4: 初步大纲** - 左侧可折叠大纲浮层（显示章节结构），与 Step 2 双向同步，**Tiptap WYSIWYG 编辑**
 - **Step 5: 角色宝典** - 数据与 Step 3 同步，基础/详细模板切换，自定义字段
 - **Step 6: 完成大纲** - 左右分栏布局（场景列表 | 场景详情），@提及风格角色选择
 - **Step 7: 场景清单** - 场景列表与摘要，支持列表/时间线视图切换
-- **Step 8: 人物小传** - 数据与 Step 3 同步，纯编辑模式
-- **Step 9: 规划场景** - 左侧场景列表 + 右侧编辑器
-- **Step 10: 初稿** - 码字界面：左侧大纲面板、底部状态栏（字数/时间）、专注模式
+- **Step 8: 人物小传** - 数据与 Step 3 同步，**Tiptap WYSIWYG 编辑**
+- **Step 9: 规划场景** - 左侧场景列表 + 右侧编辑器，**Tiptap WYSIWYG 编辑**
+- **Step 10: 初稿** - 码字界面：左侧大纲面板、底部状态栏（字数/时间）、专注模式，**Tiptap WYSIWYG 编辑**
 
 ### 可视化工具
 
@@ -30,6 +30,13 @@
 
 - **项目库** - 卡片网格视图，支持新建/打开/删除/复制/导出项目
 - **备份功能** - 自动备份（保存时触发，保留5个版本）+ 手动备份
+
+### 高级功能
+
+- **WYSIWYG 编辑器** - 全局 Tiptap 替换，固定工具栏（粗体/斜体/标题/列表/链接等），Markdown 快捷键兼容
+- **自定义工作流** - 标准版（10步）/ 精简版（7步跳过5/8/9），每步可见性独立开关
+- **多格式导出** - Markdown / Obsidian 模板（wiki-links）/ Notion 模板 / PDF / EPUB
+- **AI 辅助写作** - 支持 OpenAI API、Claude API、本地模型（Ollama、LM Studio），语法检查/写作建议/润色/续写
 
 ### 沉浸感优化
 
@@ -77,13 +84,16 @@ npm run electron:build
 ```
 src/
 ├── components/          # UI 组件
+│   ├── AIAssistant/     # AI 写作助手
 │   ├── BackupModal/     # 备份管理弹窗
 │   ├── CollapsibleTips/ # 可折叠提示卡片
 │   ├── ExportModal/     # 导出完成弹窗
-│   ├── MarkdownEditor/   # Markdown编辑器
+│   ├── MarkdownEditor/  # Markdown编辑器
 │   ├── RelationGraph/   # 关系图谱可视化
+│   ├── SettingsModal/  # 工作流设置弹窗
 │   ├── Sidebar/        # 侧边栏
-│   ├── Timeline/        # 时间线视图
+│   ├── Timeline/       # 时间线视图
+│   ├── TiptapEditor/   # Tiptap WYSIWYG 编辑器
 │   ├── Toast/          # 提示组件
 │   └── TopBar/         # 顶栏
 ├── steps/               # 写作步骤页面
@@ -124,7 +134,10 @@ src/
 | v2.2 | 关系图谱 | ✅ |
 | v2.3 | 时间线 | ✅ |
 | v2.4 | 备份功能 | ✅ |
-| v2.5+ | AI辅助、WYSIWYG编辑器 | ⏳ 待开始 |
+| v2.5 | WYSIWYG编辑器（Tiptap全局替换） | ✅ |
+| v2.6 | 自定义工作流（每步可见性开关） | ✅ |
+| v2.7 | 导出功能升级（多格式/模板） | ✅ |
+| v2.8 | AI辅助写作（OpenAI兼容协议） | ✅ |
 
 ## License
 

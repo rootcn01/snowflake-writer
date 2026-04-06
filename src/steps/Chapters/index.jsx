@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
+import TiptapEditor from '../../components/TiptapEditor';
 
 export default function Chapters() {
   const { project, dispatch, showToast } = useProject();
@@ -352,15 +353,12 @@ export default function Chapters() {
                 </div>
 
                 {/* Editor */}
-                <textarea
+                <TiptapEditor
                   ref={editorRef}
                   value={selectedChapterContent}
-                  onChange={(e) => handleContentChange(selectedChapter.id, e.target.value)}
+                  onChange={(val) => handleContentChange(selectedChapter.id, val)}
                   placeholder={`开始撰写 "${selectedChapter.title || '本章'}" 的内容...\n\n快捷提示：\n- 使用空行分隔段落\n- 留意章节节奏和张力\n- 衔接上一章的结尾`}
-                  className={`flex-1 w-full bg-bg-tertiary text-text-primary font-serif text-base leading-relaxed
-                             p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
-                             placeholder-text-secondary ${focusMode ? 'text-lg' : ''}`}
-                  style={{ fontFamily: '"Source Han Serif CN", "Source Han Serif", "Noto Serif SC", Georgia, serif' }}
+                  className="flex-1 [&_.ProseMirror]:min-h-[300px]"
                 />
               </div>
             ) : (

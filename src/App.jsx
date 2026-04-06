@@ -18,9 +18,10 @@ import SceneDescriptions from './steps/SceneDescriptions/SceneDescriptions';
 import Chapters from './steps/Chapters';
 import ExportModal from './components/ExportModal/ExportModal';
 import BackupModal from './components/BackupModal';
+import SettingsModal from './components/SettingsModal';
 
 function AppContent() {
-  const { currentStep, saveStatus, showExportModal, showBackupModal, showProjectLibrary, currentView } = useProject();
+  const { currentStep, saveStatus, showExportModal, showBackupModal, showSettingsModal, showProjectLibrary, currentView } = useProject();
 
   const renderStep = () => {
     if (showProjectLibrary) {
@@ -104,6 +105,7 @@ function AppContent() {
       <Toast />
       {showExportModal && <ExportModal />}
       {showBackupModal && <BackupModal />}
+      {showSettingsModal && <SettingsModal />}
     </div>
   );
 }

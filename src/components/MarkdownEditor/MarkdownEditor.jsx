@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { marked } from 'marked';
+import TiptapEditor from '../TiptapEditor';
+import { textToTiptap, tiptapToMarkdown, isTiptapJson } from '../../utils/tiptapUtils';
 
 marked.setOptions({
   breaks: true,
@@ -9,18 +11,24 @@ marked.setOptions({
 export default function MarkdownEditor({ value, onChange, placeholder }) {
   const [mode, setMode] = useState('edit');
 
-  const handleChange = (e) => {
-    onChange(e.target.value);
+  // Convert value to Tiptap format for internal use
+  const tiptapValue = textToTiptap(value);
+
+  const handleChange = (tiptapJson) => {
+    // Convert back to markdown for storage
+    const markdown = tiptapToMarkdown(tiptapJson);
+    onChange(markdown);
   };
 
   const renderPreview = () => {
-    if (!value) {
+    const markdown = typeof value === 'string' ? value : tiptapToMarkdown(value);
+    if (!markdown) {
       return <p className="text-text-secondary italic">{placeholder}</p>;
     }
     return (
       <div
-        className="markdown-preview"
-        dangerouslySetInnerHTML={{ __html: marked.parse(value) }}
+        className="markdown-preview prose prose-invert max-w-none"
+        dangerouslySetInnerHTML={{ __html: marked.parse(markdown) }}
       />
     );
   };
@@ -56,13 +64,10 @@ export default function MarkdownEditor({ value, onChange, placeholder }) {
       {/* Content Area */}
       <div className="flex-1 overflow-auto">
         {mode === 'edit' ? (
-          <textarea
-            value={value}
+          <TiptapEditor
+            value={tiptapValue}
             onChange={handleChange}
             placeholder={placeholder}
-            className="w-full h-full min-h-[200px] bg-bg-tertiary text-text-primary font-mono text-base
-                       p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
-                       placeholder-text-secondary"
           />
         ) : (
           <div className="bg-bg-tertiary p-6 rounded-md border border-border min-h-[200px]">

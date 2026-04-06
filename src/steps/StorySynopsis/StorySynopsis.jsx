@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 import { parseSynopsisMarkdown } from '../../utils/markdownUtils';
+import TiptapEditor from '../../components/TiptapEditor';
 
 export default function StorySynopsis() {
   const { project, dispatch } = useProject();
@@ -175,14 +176,12 @@ export default function StorySynopsis() {
 
         {/* Right: Editor */}
         <div className="flex-1">
-          <div className="card">
-            <textarea
+          <div className="card h-full">
+            <TiptapEditor
               value={synopsis}
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={handleChange}
               placeholder="在此处编写详细的故事大纲..."
-              className="w-full h-full min-h-[450px] bg-bg-tertiary text-text-primary font-mono text-base
-                         p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
-                         placeholder-text-secondary"
+              className="h-full [&_.ProseMirror]:min-h-[450px]"
             />
           </div>
         </div>

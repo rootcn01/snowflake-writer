@@ -25,7 +25,9 @@ const initialState = {
     },
     meta: {
       completedSteps: [],
-      relationships: [] // 关系图谱数据
+      relationships: [], // 关系图谱数据
+      workflowTemplate: 'standard', // 'standard' | 'simplified'
+      enabledSteps: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] // 默认全部启用
     }
   },
   currentStep: 0,
@@ -35,6 +37,7 @@ const initialState = {
   toast: null,
   showExportModal: false,
   showBackupModal: false,
+  showSettingsModal: false,
   showProjectLibrary: true, // 项目库视图控制
   currentView: 'library', // 'library' | 'project' | 'relationGraph' | 'timeline'
   topBarSelector: null // { label, items: [{id, name, icon?}], onAdd, onSelect }
@@ -255,6 +258,22 @@ function projectReducer(state, action) {
           meta: {
             ...state.project.meta,
             relationships: action.payload
+          }
+        }
+      };
+
+    case 'SET_SHOW_SETTINGS_MODAL':
+      return { ...state, showSettingsModal: action.payload };
+
+    case 'UPDATE_WORKFLOW_SETTINGS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          meta: {
+            ...state.project.meta,
+            workflowTemplate: action.payload.workflowTemplate,
+            enabledSteps: action.payload.enabledSteps
           }
         }
       };

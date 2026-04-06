@@ -23,6 +23,10 @@ const visualizations = [
 export default function Sidebar() {
   const { sidebarOpen, dispatch, currentStep, project, showProjectLibrary, currentView } = useProject();
 
+  // Get enabled steps from project meta (default to all 10 steps if not set)
+  const enabledSteps = project.meta?.enabledSteps || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const visibleSteps = steps.filter((_, index) => enabledSteps.includes(index));
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -115,46 +119,50 @@ export default function Sidebar() {
                 写作步骤
               </h3>
               <ul className="space-y-1">
-                {steps.map((step, index) => (
-                  <li key={step.id}>
-                    <button
-                      onClick={() => handleStepClick(index)}
-                      className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors
-                        ${currentStep === index
-                          ? 'bg-accent/10 text-accent'
-                          : 'text-text-primary hover:bg-bg-tertiary'
-                        }`}
-                    >
-                      {/* Status Icon */}
-                      <span className={`mt-0.5 w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full
-                        ${isCompleted(step.id)
-                          ? 'bg-success text-white'
-                          : currentStep === index
-                            ? 'bg-accent text-white'
-                            : 'bg-bg-tertiary text-text-secondary'
+                {visibleSteps.map((step, visibleIndex) => {
+                  // Get the actual step index in the original steps array
+                  const actualIndex = enabledSteps[visibleIndex];
+                  return (
+                    <li key={step.id}>
+                      <button
+                        onClick={() => handleStepClick(actualIndex)}
+                        className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors
+                          ${currentStep === actualIndex
+                            ? 'bg-accent/10 text-accent'
+                            : 'text-text-primary hover:bg-bg-tertiary'
                         }`}
                       >
-                        {isCompleted(step.id) ? (
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        ) : (
-                          <span className="text-xs font-medium">{index + 1}</span>
-                        )}
-                      </span>
+                        {/* Status Icon */}
+                        <span className={`mt-0.5 w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full
+                          ${isCompleted(step.id)
+                            ? 'bg-success text-white'
+                            : currentStep === actualIndex
+                              ? 'bg-accent text-white'
+                              : 'bg-bg-tertiary text-text-secondary'
+                          }`}
+                        >
+                          {isCompleted(step.id) ? (
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <span className="text-xs font-medium">{actualIndex + 1}</span>
+                          )}
+                        </span>
 
-                      {/* Step Info */}
-                      <div className="flex-1 min-w-0">
-                        <span className="block text-sm font-medium truncate">
-                          {step.label}
-                        </span>
-                        <span className="block text-xs text-text-secondary mt-0.5 line-clamp-2">
-                          {step.description}
-                        </span>
-                      </div>
-                    </button>
-                  </li>
-                ))}
+                        {/* Step Info */}
+                        <div className="flex-1 min-w-0">
+                          <span className="block text-sm font-medium truncate">
+                            {step.label}
+                          </span>
+                          <span className="block text-xs text-text-secondary mt-0.5 line-clamp-2">
+                            {step.description}
+                          </span>
+                        </div>
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
           )}
@@ -198,12 +206,12 @@ export default function Sidebar() {
           {!showProjectLibrary ? (
             <div className="pt-4 border-t border-border group/progress hover:bg-bg-tertiary/50 transition-colors -mx-2 px-2 py-2 rounded-lg">
               <div className="text-xs text-text-secondary opacity-50 group-hover/progress:opacity-100 transition-opacity">
-                进度: {project.meta.completedSteps.length}/{steps.length} 完成
+                进度: {project.meta.completedSteps.length}/{visibleSteps.length} 完成
               </div>
               <div className="mt-2 h-1 bg-bg-tertiary rounded-full overflow-hidden opacity-30 group-hover/progress:opacity-100 transition-opacity">
                 <div
                   className="h-full bg-success transition-all duration-300"
-                  style={{ width: `${(project.meta.completedSteps.length / steps.length) * 100}%` }}
+                  style={{ width: `${(project.meta.completedSteps.length / visibleSteps.length) * 100}%` }}
                 />
               </div>
             </div>

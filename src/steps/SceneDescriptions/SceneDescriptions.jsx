@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
+import TiptapEditor from '../../components/TiptapEditor';
 
 export default function SceneDescriptions() {
   const { project, dispatch, showToast } = useProject();
@@ -111,14 +112,11 @@ export default function SceneDescriptions() {
                 </div>
               </div>
 
-              <textarea
+              <TiptapEditor
                 value={selectedSceneContent}
-                onChange={(e) => handleContentChange(selectedScene.id, e.target.value)}
+                onChange={(val) => handleContentChange(selectedScene.id, val)}
                 placeholder={`为 "${selectedScene.name || '此场景'}" 编写详细的场景描述...\n\n可以包括：\n- 场景发生的具体环境\n- 角色的动作和对话\n- 场景的氛围和情绪\n- 细节描写和伏笔\n- 场景在故事中的作用`}
-                className="w-full h-full min-h-[400px] bg-bg-tertiary text-text-primary font-serif text-base leading-relaxed
-                           p-4 rounded-md border border-border resize-none focus:border-accent focus:outline-none
-                           placeholder-text-secondary"
-                style={{ fontFamily: '"Source Han Serif CN", "Source Han Serif", "Noto Serif SC", Georgia, serif' }}
+                className="min-h-[400px]"
               />
             </div>
           ) : (

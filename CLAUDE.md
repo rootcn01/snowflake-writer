@@ -9,9 +9,10 @@
 - **框架**: Electron 28 + React 18
 - **构建**: Vite 5
 - **样式**: Tailwind CSS (PostCSS)
-- **Markdown**: marked.js
+- **Markdown**: marked.js + Tiptap (WYSIWYG编辑器)
 - **状态**: React Context
 - **存储**: 本地 JSON (Electron fs)
+- **AI**: OpenAI 兼容 API
 
 ## 开发命令
 
@@ -34,29 +35,40 @@ npm run electron:build  # 构建 Electron 安装包
 
 ### 编辑器架构
 不同步骤使用不同编辑器策略：
-- **Step 4/8/9/10**: 纯 Textarea，编辑器高度自适应窗口，无预览切换
-- **其他步骤**: 纯编辑模式
+- **Step 4/8/9/10**: Tiptap WYSIWYG 编辑器，高度自适应窗口，无预览切换
+- **其他步骤**: Tiptap 编辑器
 
 ```jsx
-// Step 4/8/9/10 直接使用 textarea，高度自适应
-<textarea className="h-[calc(100vh-顶部-底部)] ..." />
+// TiptapEditor 组件 - WYSIWYG 编辑
+<TiptapEditor
+  value={content}
+  onChange={handleChange}
+  placeholder="开始写作..."
+/>
 
-// MarkdownEditor 统一为纯编辑模式，无切换按钮
+// MarkdownEditor 保留 edit/preview 切换功能
 <MarkdownEditor />
 ```
+
+### AI 助手
+- 支持 OpenAI API、Claude API（通过 OpenAI 格式）、本地模型（Ollama、LM Studio）
+- 功能：语法检查、写作建议、润色、续写
 
 ## 文件结构
 
 ```
 src/
 ├── components/
+│   ├── AIAssistant/      # AI 写作助手
 │   ├── BackupModal/      # 备份管理弹窗
 │   ├── CollapsibleTips/ # 可折叠提示卡片
 │   ├── ExportModal/     # 导出完成弹窗
-│   ├── MarkdownEditor/  # Markdown编辑器
+│   ├── MarkdownEditor/  # Markdown编辑器（基于Tiptap）
 │   ├── RelationGraph/   # 关系图谱可视化
-│   ├── Sidebar/        # 侧边栏（支持全部10步+项目库）
+│   ├── SettingsModal/   # 工作流设置弹窗
+│   ├── Sidebar/        # 侧边栏（支持工作流可见性）
 │   ├── Timeline/       # 时间线视图
+│   ├── TiptapEditor/   # Tiptap WYSIWYG 编辑器
 │   ├── Toast/          # 提示组件
 │   └── TopBar/         # 顶栏
 ├── steps/              # 写作步骤页面
@@ -73,7 +85,7 @@ src/
 ├── pages/
 │   └── ProjectLibrary/   # 项目库页面
 ├── store/               # React Context
-└── utils/              # 工具函数 (export.js, markdownUtils.js)
+└── utils/              # 工具函数 (export.js, markdownUtils.js, tiptapUtils.js)
 ```
 
 ## 文档与计划管理
@@ -129,7 +141,10 @@ src/
 - v2.2: 关系图谱 - 角色/场景关系可视化 ✅
 - v2.3: 时间线 - 故事时间轴视图 ✅
 - v2.4: 备份功能 - 自动/手动备份与恢复 ✅
-- v2.5+: AI辅助、WYSIWYG编辑器 ⏳ 待开始
+- v2.5: WYSIWYG编辑器（Tiptap全局替换） ✅
+- v2.6: 自定义工作流（每步可见性开关） ✅
+- v2.7: 导出功能升级（多格式/模板） ✅
+- v2.8: AI辅助写作（OpenAI兼容协议） ✅
 
 ## V2.0 版本规划
 
@@ -143,8 +158,10 @@ src/
 | 2.2 | 关系图谱 | P2 | ✅ 已完成 |
 | 2.3 | 时间线 | P2 | ✅ 已完成 |
 | 2.4 | 备份功能 | P2 | ✅ 已完成 |
-| 2.5 | AI辅助写作 | P3 | ⏳ 待开始 |
-| 2.6 | WYSIWYG编辑器 | P3 | ⏳ 待开始 |
+| 2.5 | WYSIWYG编辑器（Tiptap全局替换） | **P1** | ✅ 已完成 |
+| 2.6 | 自定义工作流（每步可见性开关） | P2 | ✅ 已完成 |
+| 2.7 | 导出功能升级（多格式/模板） | P2 | ✅ 已完成 |
+| 2.8 | AI辅助写作（OpenAI兼容协议） | P3 | ✅ 已完成 |
 
 ## 版本发布流程
 
