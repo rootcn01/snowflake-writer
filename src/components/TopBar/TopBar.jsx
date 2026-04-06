@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useProject } from '../../store/ProjectContext';
 import { generateMarkdown } from '../../utils/export';
 
 export default function TopBar() {
-  const { project, dispatch, theme, showToast } = useProject();
+  const { project, dispatch, theme, showToast, topBarSelector } = useProject();
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState(project.title);
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const selectorRef = useRef(null);
 
   const toggleTheme = () => {
     dispatch({ type: 'SET_THEME', payload: theme === 'dark' ? 'light' : 'dark' });
@@ -54,6 +56,17 @@ export default function TopBar() {
     }
   };
 
+  // Close selector when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (selectorRef.current && !selectorRef.current.contains(event.target)) {
+        setSelectorOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="h-12 bg-bg-secondary border-b border-border flex items-center justify-between px-4">
       {/* Left: Menu + Title */}
@@ -91,8 +104,63 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* Right: Theme + Export */}
+      {/* Right: Selector + Theme + Export */}
       <div className="flex items-center gap-2">
+        {/* TopBar Selector Dropdown */}
+        {topBarSelector && (
+          <div ref={selectorRef} className="relative">
+            <button
+              onClick={() => setSelectorOpen(!selectorOpen)}
+              className="btn-ghost flex items-center gap-2 text-sm"
+            >
+              <span className="text-lg">{topBarSelector.icon || '📋'}</span>
+              <span className="hidden sm:inline">{topBarSelector.label}</span>
+              <svg className={`w-4 h-4 transition-transform ${selectorOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {selectorOpen && (
+              <div className="absolute right-0 top-full mt-1 w-56 bg-bg-secondary border border-border rounded-md shadow-lg z-50">
+                <div className="py-1 max-h-64 overflow-y-auto">
+                  {topBarSelector.items.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        topBarSelector.onSelect(item.id);
+                        setSelectorOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-bg-tertiary transition-colors"
+                    >
+                      <span className="w-6 h-6 rounded-full bg-bg-tertiary flex items-center justify-center text-xs text-text-secondary">
+                        {item.index + 1}
+                      </span>
+                      <span className="flex-1 text-left truncate">{item.name}</span>
+                      {item.hasContent && (
+                        <span className="w-2 h-2 rounded-full bg-success" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                {topBarSelector.onAdd && (
+                  <div className="border-t border-border">
+                    <button
+                      onClick={() => {
+                        topBarSelector.onAdd();
+                        setSelectorOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-accent hover:bg-bg-tertiary transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      添加新{topBarSelector.label}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         <button
           onClick={toggleTheme}
           className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-bg-tertiary transition-colors"

@@ -31,7 +31,8 @@ const initialState = {
   theme: localStorage.getItem('theme') || 'dark',
   saveStatus: 'saved',
   toast: null,
-  showExportModal: false
+  showExportModal: false,
+  topBarSelector: null // { label, items: [{id, name, icon?}], onAdd, onSelect }
 };
 
 function projectReducer(state, action) {
@@ -207,6 +208,9 @@ function projectReducer(state, action) {
 
     case 'SET_SHOW_EXPORT_MODAL':
       return { ...state, showExportModal: action.payload };
+
+    case 'SET_TOPBAR_SELECTOR':
+      return { ...state, topBarSelector: action.payload };
 
     default:
       return state;
