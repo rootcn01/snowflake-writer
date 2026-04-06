@@ -86,6 +86,10 @@ src/
 
 ## 版本发布流程
 
+> 日常开发：直接 push，不打包
+> 发布稳定版本：构建 + Releases 上传
+
+### 日常开发
 1. **开发 & 测试**
    - 开发在 feature 分支进行
    - 测试验证完成后合并到 main
@@ -97,19 +101,26 @@ src/
    git push
    ```
 
-3. **本地构建**
+3. **本地测试构建**（可选）
    ```bash
    npm run electron:build
    ```
 
-4. **发布 Release**
-   - 在 GitHub 创建 tag：`git tag v1.x.x && git push origin v1.x.x`
-   - 打包 `release/win-unpacked/` 为 zip
-   - 上传到 GitHub Releases
+### 发布稳定版本
+1. **确认代码稳定**，合并到 main
 
-5. **本地清理**
+2. **构建打包**
+   ```bash
+   npm run electron:build
+   ```
+
+3. **创建 GitHub Release**
+   - 推送 tag：`git tag v1.x.x && git push origin v1.x.x`
+   - 打包 `release/win-unpacked/` 为 zip
+   - 在 GitHub Releases 页面上传 zip
+
+4. **本地清理**
    - 删除 `release/` 目录节省空间
-   - 旧版本从 GitHub 下载
 
 ## 快捷键
 
