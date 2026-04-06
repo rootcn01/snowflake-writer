@@ -1,6 +1,6 @@
 {
   "name": "snowflake-writer",
-  "version": "1.4.2",
+  "version": "2.0.1",
   "description": "雪花写作法 - 基于Randy Ingermanson雪花写作法的桌面写作工具",
   "author": "Snowflake Writer Team",
   "main": "main.js",
@@ -17,7 +17,7 @@
     "productName": "snowflake-writer",
     "icon": "icon.ico",
     "directories": {
-      "output": "release"
+      "output": "release-v2"
     },
     "files": [
       "dist/**/*",
