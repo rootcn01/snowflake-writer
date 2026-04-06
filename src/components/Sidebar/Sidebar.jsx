@@ -14,12 +14,24 @@ const steps = [
   { id: 'chapters', label: '初稿', description: '撰写完整故事初稿' }
 ];
 
-export default function Sidebar() {
-  const { sidebarOpen, dispatch, currentStep, project } = useProject();
+// 可视化工具
+const visualizations = [
+  { id: 'relationGraph', label: '关系图谱', description: '角色/场景关系可视化' },
+  { id: 'timeline', label: '时间线', description: '故事时间轴视图' }
+];
 
-  // Keyboard shortcut
+export default function Sidebar() {
+  const { sidebarOpen, dispatch, currentStep, project, showProjectLibrary, currentView } = useProject();
+
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Ctrl+P: Open project library
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        dispatch({ type: 'SET_CURRENT_VIEW', payload: 'library' });
+      }
+      // Ctrl+\: Toggle sidebar
       if ((e.ctrlKey || e.metaKey) && e.key === '\\') {
         e.preventDefault();
         dispatch({ type: 'TOGGLE_SIDEBAR' });
@@ -39,6 +51,17 @@ export default function Sidebar() {
 
   const handleStepClick = (index) => {
     dispatch({ type: 'SET_STEP', payload: index });
+    dispatch({ type: 'SET_CURRENT_VIEW', payload: 'project' });
+    dispatch({ type: 'SET_SIDEBAR', payload: false });
+  };
+
+  const handleOpenProjectLibrary = () => {
+    dispatch({ type: 'SET_CURRENT_VIEW', payload: 'library' });
+    dispatch({ type: 'SET_SIDEBAR', payload: false });
+  };
+
+  const handleVisualizationClick = (viewId) => {
+    dispatch({ type: 'SET_CURRENT_VIEW', payload: viewId });
     dispatch({ type: 'SET_SIDEBAR', payload: false });
   };
 
@@ -63,77 +86,157 @@ export default function Sidebar() {
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="p-4 flex flex-col h-full">
-          {/* Project Name */}
-          <div className="mb-6 pb-4 border-b border-border">
-            <h2 className="text-sm font-medium text-text-primary truncate">
-              {project.title || '未命名'}
-            </h2>
-            <p className="text-xs text-text-secondary mt-1">
-              项目
-            </p>
-          </div>
+          {/* Project Name / Library Entry */}
+          {showProjectLibrary ? (
+            <div className="mb-6 pb-4 border-b border-border">
+              <button
+                onClick={handleOpenProjectLibrary}
+                className="flex items-center gap-2 w-full text-left"
+              >
+                <span className="text-xl">❄️</span>
+                <span className="text-sm font-medium text-text-primary">项目库</span>
+              </button>
+            </div>
+          ) : (
+            <div className="mb-6 pb-4 border-b border-border">
+              <h2 className="text-sm font-medium text-text-primary truncate">
+                {project.title || '未命名'}
+              </h2>
+              <p className="text-xs text-text-secondary mt-1">
+                项目
+              </p>
+            </div>
+          )}
 
           {/* Steps List */}
-          <nav className="flex-1">
-            <h3 className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-3">
-              写作步骤
-            </h3>
-            <ul className="space-y-1">
-              {steps.map((step, index) => (
-                <li key={step.id}>
-                  <button
-                    onClick={() => handleStepClick(index)}
-                    className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors
-                      ${currentStep === index
-                        ? 'bg-accent/10 text-accent'
-                        : 'text-text-primary hover:bg-bg-tertiary'
-                      }`}
-                  >
-                    {/* Status Icon */}
-                    <span className={`mt-0.5 w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full
-                      ${isCompleted(step.id)
-                        ? 'bg-success text-white'
-                        : currentStep === index
-                          ? 'bg-accent text-white'
-                          : 'bg-bg-tertiary text-text-secondary'
-                      }`}
+          {!showProjectLibrary && (
+            <nav className="flex-1">
+              <h3 className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-3">
+                写作步骤
+              </h3>
+              <ul className="space-y-1">
+                {steps.map((step, index) => (
+                  <li key={step.id}>
+                    <button
+                      onClick={() => handleStepClick(index)}
+                      className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors
+                        ${currentStep === index
+                          ? 'bg-accent/10 text-accent'
+                          : 'text-text-primary hover:bg-bg-tertiary'
+                        }`}
                     >
-                      {isCompleted(step.id) ? (
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
-                      ) : (
-                        <span className="text-xs font-medium">{index + 1}</span>
-                      )}
-                    </span>
-
-                    {/* Step Info */}
-                    <div className="flex-1 min-w-0">
-                      <span className="block text-sm font-medium truncate">
-                        {step.label}
+                      {/* Status Icon */}
+                      <span className={`mt-0.5 w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full
+                        ${isCompleted(step.id)
+                          ? 'bg-success text-white'
+                          : currentStep === index
+                            ? 'bg-accent text-white'
+                            : 'bg-bg-tertiary text-text-secondary'
+                        }`}
+                      >
+                        {isCompleted(step.id) ? (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <span className="text-xs font-medium">{index + 1}</span>
+                        )}
                       </span>
-                      <span className="block text-xs text-text-secondary mt-0.5 line-clamp-2">
-                        {step.description}
-                      </span>
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
 
-          {/* Progress */}
-          <div className="pt-4 border-t border-border group/progress hover:bg-bg-tertiary/50 transition-colors -mx-2 px-2 py-2 rounded-lg">
-            <div className="text-xs text-text-secondary opacity-50 group-hover/progress:opacity-100 transition-opacity">
-              进度: {project.meta.completedSteps.length}/{steps.length} 完成
+                      {/* Step Info */}
+                      <div className="flex-1 min-w-0">
+                        <span className="block text-sm font-medium truncate">
+                          {step.label}
+                        </span>
+                        <span className="block text-xs text-text-secondary mt-0.5 line-clamp-2">
+                          {step.description}
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+
+          {/* Visualizations Section */}
+          {!showProjectLibrary && (
+            <div className="mt-4 pt-4 border-t border-border">
+              <h3 className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-3">
+                可视化工具
+              </h3>
+              <ul className="space-y-1">
+                {visualizations.map((viz) => (
+                  <li key={viz.id}>
+                    <button
+                      onClick={() => handleVisualizationClick(viz.id)}
+                      className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-md text-left transition-colors
+                        ${currentView === viz.id
+                          ? 'bg-accent/10 text-accent'
+                          : 'text-text-primary hover:bg-bg-tertiary'
+                        }`}
+                    >
+                      <span className="mt-0.5 w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full bg-bg-tertiary text-text-secondary">
+                        {viz.id === 'relationGraph' ? '🔗' : '📅'}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className="block text-sm font-medium truncate">
+                          {viz.label}
+                        </span>
+                        <span className="block text-xs text-text-secondary mt-0.5 line-clamp-2">
+                          {viz.description}
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="mt-2 h-1 bg-bg-tertiary rounded-full overflow-hidden opacity-30 group-hover/progress:opacity-100 transition-opacity">
-              <div
-                className="h-full bg-success transition-all duration-300"
-                style={{ width: `${(project.meta.completedSteps.length / steps.length) * 100}%` }}
-              />
+          )}
+
+          {/* Progress / Library Button */}
+          {!showProjectLibrary ? (
+            <div className="pt-4 border-t border-border group/progress hover:bg-bg-tertiary/50 transition-colors -mx-2 px-2 py-2 rounded-lg">
+              <div className="text-xs text-text-secondary opacity-50 group-hover/progress:opacity-100 transition-opacity">
+                进度: {project.meta.completedSteps.length}/{steps.length} 完成
+              </div>
+              <div className="mt-2 h-1 bg-bg-tertiary rounded-full overflow-hidden opacity-30 group-hover/progress:opacity-100 transition-opacity">
+                <div
+                  className="h-full bg-success transition-all duration-300"
+                  style={{ width: `${(project.meta.completedSteps.length / steps.length) * 100}%` }}
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="pt-4 border-t border-border">
+              <p className="text-xs text-text-secondary mb-2">
+                快捷键
+              </p>
+              <div className="space-y-1 text-xs text-text-secondary">
+                <div className="flex items-center justify-between">
+                  <span>打开项目库</span>
+                  <kbd className="px-1.5 py-0.5 bg-bg-tertiary rounded text-xs">Ctrl+P</kbd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>切换侧边栏</span>
+                  <kbd className="px-1.5 py-0.5 bg-bg-tertiary rounded text-xs">Ctrl+\</kbd>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Project Library Button (when in project) */}
+          {!showProjectLibrary && (
+            <button
+              onClick={handleOpenProjectLibrary}
+              className="mt-4 w-full flex items-center gap-2 px-3 py-2.5 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-md transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <span className="text-sm">项目库</span>
+            </button>
+          )}
         </div>
       </aside>
     </>

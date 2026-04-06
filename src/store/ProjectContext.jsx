@@ -24,7 +24,8 @@ const initialState = {
       chapters: []
     },
     meta: {
-      completedSteps: []
+      completedSteps: [],
+      relationships: [] // 关系图谱数据
     }
   },
   currentStep: 0,
@@ -33,6 +34,9 @@ const initialState = {
   saveStatus: 'saved',
   toast: null,
   showExportModal: false,
+  showBackupModal: false,
+  showProjectLibrary: true, // 项目库视图控制
+  currentView: 'library', // 'library' | 'project' | 'relationGraph' | 'timeline'
   topBarSelector: null // { label, items: [{id, name, icon?}], onAdd, onSelect }
 };
 
@@ -227,8 +231,33 @@ function projectReducer(state, action) {
     case 'SET_SHOW_EXPORT_MODAL':
       return { ...state, showExportModal: action.payload };
 
+    case 'SET_SHOW_BACKUP_MODAL':
+      return { ...state, showBackupModal: action.payload };
+
     case 'SET_TOPBAR_SELECTOR':
       return { ...state, topBarSelector: action.payload };
+
+    case 'SET_SHOW_PROJECT_LIBRARY':
+      return { ...state, showProjectLibrary: action.payload };
+
+    case 'SET_CURRENT_VIEW':
+      return {
+        ...state,
+        currentView: action.payload,
+        showProjectLibrary: action.payload === 'library'
+      };
+
+    case 'UPDATE_RELATIONSHIPS':
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          meta: {
+            ...state.project.meta,
+            relationships: action.payload
+          }
+        }
+      };
 
     default:
       return state;
@@ -251,6 +280,11 @@ export function ProjectProvider({ children }) {
       const result = await window.electronAPI.saveProject(state.project);
       if (result.success) {
         dispatch({ type: 'SET_SAVE_STATUS', payload: 'saved' });
+
+        // Auto backup if enabled
+        if (localStorage.getItem('autoBackup') !== 'false') {
+          window.electronAPI.createBackup(state.project.id).catch(() => {});
+        }
       } else {
         dispatch({ type: 'SET_SAVE_STATUS', payload: 'error' });
         dispatch({ type: 'SET_TOAST', payload: { type: 'error', message: '保存失败: ' + result.error } });

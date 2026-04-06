@@ -16,10 +16,20 @@
 - **Step 4: 初步大纲** - 左侧可折叠大纲浮层（显示章节结构），与 Step 2 双向同步
 - **Step 5: 角色宝典** - 数据与 Step 3 同步，基础/详细模板切换，自定义字段
 - **Step 6: 完成大纲** - 左右分栏布局（场景列表 | 场景详情），@提及风格角色选择
-- **Step 7: 场景清单** - 场景列表与摘要
+- **Step 7: 场景清单** - 场景列表与摘要，支持列表/时间线视图切换
 - **Step 8: 人物小传** - 数据与 Step 3 同步，纯编辑模式
 - **Step 9: 规划场景** - 左侧场景列表 + 右侧编辑器
-- **Step 10: 初稿** - 码字界面升级：左侧大纲面板、底部状态栏（字数/时间）、专注模式
+- **Step 10: 初稿** - 码字界面：左侧大纲面板、底部状态栏（字数/时间）、专注模式
+
+### 可视化工具
+
+- **关系图谱** - 角色/场景关系可视化，支持血缘、冲突、爱情、朋友等关系类型
+- **时间线** - 故事时间轴视图（早期/中期/晚期），拖拽调整场景顺序
+
+### 项目管理
+
+- **项目库** - 卡片网格视图，支持新建/打开/删除/复制/导出项目
+- **备份功能** - 自动备份（保存时触发，保留5个版本）+ 手动备份
 
 ### 沉浸感优化
 
@@ -32,7 +42,7 @@
 
 - **框架**: Electron 28 + React 18
 - **构建**: Vite 5
-- **样式**: Tailwind CSS (CDN)
+- **样式**: Tailwind CSS (PostCSS)
 - **Markdown**: marked.js
 - **状态**: React Context
 - **存储**: 本地 JSON (Electron fs)
@@ -57,6 +67,7 @@ npm run electron:build
 
 | 快捷键 | 功能 |
 |--------|------|
+| Ctrl+P | 打开项目库 |
 | Ctrl+\ | 切换侧边栏 |
 | Ctrl+S | 手动保存 |
 | ESC | 关闭侧边栏/弹窗 |
@@ -66,12 +77,15 @@ npm run electron:build
 ```
 src/
 ├── components/          # UI 组件
+│   ├── BackupModal/     # 备份管理弹窗
 │   ├── CollapsibleTips/ # 可折叠提示卡片
 │   ├── ExportModal/     # 导出完成弹窗
-│   ├── MarkdownEditor/  # Markdown编辑器
-│   ├── Sidebar/         # 侧边栏
-│   ├── Toast/           # 提示组件
-│   └── TopBar/          # 顶栏
+│   ├── MarkdownEditor/   # Markdown编辑器
+│   ├── RelationGraph/   # 关系图谱可视化
+│   ├── Sidebar/        # 侧边栏
+│   ├── Timeline/        # 时间线视图
+│   ├── Toast/          # 提示组件
+│   └── TopBar/         # 顶栏
 ├── steps/               # 写作步骤页面
 │   ├── Chapters/              # Step 10: 初稿
 │   ├── CharacterBackstories/  # Step 8: 人物小传
@@ -80,9 +94,11 @@ src/
 │   ├── OneParagraph/         # Step 2: 一段式概括
 │   ├── OneSentence/          # Step 1: 一句话概括
 │   ├── SceneDescriptions/    # Step 9: 规划场景
-│   ├── SceneList/            # Step 7: 场景清单
+│   ├── SceneList/           # Step 7: 场景清单
 │   ├── SceneOutlines/        # Step 6: 完成大纲
 │   └── StorySynopsis/        # Step 4: 初步大纲
+├── pages/
+│   └── ProjectLibrary/       # 项目库页面
 ├── store/               # React Context
 └── utils/              # 工具函数
 ```
@@ -100,12 +116,15 @@ src/
 | v1.4 | Step 10初稿 - 分章节管理 | ✅ |
 | v1.4.1 | Tips极简、TopBar下拉选择器 | ✅ |
 | v1.4.2 | Step 3标签化、Step 2/4静默同步 | ✅ |
-| **v2.0.1** | **Bug修复 - 菜单栏禁用、Step 2/4双向同步** | **✅** |
-| **v2.0.2** | **UI优化 - Step 3/6分栏、Step 4大纲浮层** | **✅** |
-| **v2.0.3** | **数据打通 - 角色数据同步、自定义模板** | **✅** |
-| **v2.0.4** | **Step 10码字界面升级、专注模式** | **✅** |
-| v2.1 | 项目库管理 | 🔄 进行中 |
-| v2.2+ | 关系图谱、时间线、AI辅助 | ⏳ 待开始 |
+| v2.0.1 | Bug修复 - 菜单栏禁用、Step 2/4双向同步 | ✅ |
+| v2.0.2 | UI优化 - Step 3/6分栏、Step 4大纲浮层 | ✅ |
+| v2.0.3 | 数据打通 - 角色数据同步、自定义模板 | ✅ |
+| v2.0.4 | Step 10码字界面升级、专注模式 | ✅ |
+| v2.1 | 项目库管理 | ✅ |
+| v2.2 | 关系图谱 | ✅ |
+| v2.3 | 时间线 | ✅ |
+| v2.4 | 备份功能 | ✅ |
+| v2.5+ | AI辅助、WYSIWYG编辑器 | ⏳ 待开始 |
 
 ## License
 
