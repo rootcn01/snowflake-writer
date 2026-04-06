@@ -106,13 +106,14 @@ export default function SceneList() {
                       className="w-full bg-transparent border-0 text-sm text-text-primary placeholder-text-secondary focus:outline-none"
                     />
                   </td>
-                  <td className="py-3 px-4">
-                    <input
+                  <td className="py-3 px-4 max-w-xs">
+                    <textarea
                       type="text"
                       value={scene.summary}
                       onChange={(e) => updateScene(index, 'summary', e.target.value)}
                       placeholder="简要描述..."
-                      className="w-full bg-transparent border-0 text-sm text-text-primary placeholder-text-secondary focus:outline-none"
+                      rows={1}
+                      className="w-full bg-transparent border-0 text-sm text-text-primary placeholder-text-secondary focus:outline-none resize-none transition-all duration-200 hover:min-h-[60px] focus:min-h-[60px]"
                     />
                   </td>
                   <td className="py-3 px-4">

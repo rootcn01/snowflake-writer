@@ -3,7 +3,7 @@ import { useProject } from '../../store/ProjectContext';
 import CollapsibleTips from '../../components/CollapsibleTips/CollapsibleTips';
 
 export default function StorySynopsis() {
-  const { project, dispatch } = useProject();
+  const { project, dispatch, showToast } = useProject();
   const [synopsis, setSynopsis] = useState(project.steps.storySynopsis || '');
   const [initialized, setInitialized] = useState(false);
 
@@ -22,6 +22,7 @@ export default function StorySynopsis() {
         expanded = `# 故事概要\n\n基于"一段式概括"扩展的详细故事摘要。\n\n---\n\n${expanded}\n\n---\n\n## 扩展说明\n\n请在此处扩展为4-5页的详细故事描述，包括：\n- 故事的起承转合\n- 主要情节点的细节\n- 角色在每个阶段的变化\n- 伏笔与呼应`;
         setSynopsis(expanded);
         dispatch({ type: 'UPDATE_STORY_SYNOPSIS', payload: expanded });
+        showToast('success', '已同步一段式概括');
       }
     }
     setInitialized(true);

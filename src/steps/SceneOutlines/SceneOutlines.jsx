@@ -85,7 +85,7 @@ export default function SceneOutlines() {
           <div key={outline.id} className="card group">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-accent text-white text-xs flex items-center justify-center font-medium">
+                <span className="w-6 h-6 rounded-full bg-bg-tertiary text-text-secondary text-xs flex items-center justify-center font-medium">
                   {index + 1}
                 </span>
               </div>

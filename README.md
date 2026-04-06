@@ -17,11 +17,11 @@
 - **Step 5: 角色宝典** - 双栏布局，角色详细信息管理（姓名、年龄、外貌、背景、欲望、恐惧、价值观、关键时刻）
 - **Step 6: 完成大纲** - 场景4句话描述（时间、地点、目标、结局），支持多角色关联（Tag形式）
 - **Step 7: 场景清单** - 场景列表与摘要
+- **Step 8: 人物小传** - 左侧角色选择 + 右侧编辑器，纯编辑模式，自动保存
+- **Step 9: 规划场景** - 左侧场景列表 + 右侧编辑器，与Step 8布局统一
 
 ### 开发中
 
-- Step 8: 人物小传
-- Step 9: 规划场景
 - Step 10: 初稿撰写
 
 ## 技术栈
@@ -69,13 +69,15 @@ src/
 │   ├── Toast/           # 提示组件
 │   └── TopBar/          # 顶栏
 ├── steps/               # 写作步骤页面
-│   ├── CharacterDetails/
-│   ├── CharacterSummary/
-│   ├── OneParagraph/
-│   ├── OneSentence/
-│   ├── SceneList/
-│   ├── SceneOutlines/
-│   └── StorySynopsis/
+│   ├── CharacterBackstories/  # Step 8: 人物小传
+│   ├── CharacterDetails/     # Step 5: 角色宝典
+│   ├── CharacterSummary/     # Step 3: 人物概括
+│   ├── OneParagraph/         # Step 2: 一段式概括
+│   ├── OneSentence/          # Step 1: 一句话概括
+│   ├── SceneDescriptions/    # Step 9: 规划场景
+│   ├── SceneList/            # Step 7: 场景清单
+│   ├── SceneOutlines/        # Step 6: 完成大纲
+│   └── StorySynopsis/        # Step 4: 初步大纲
 ├── store/               # React Context
 └── utils/              # 工具函数
 ```
@@ -86,9 +88,10 @@ src/
 - v1.1: 角色卡片(Step3/5)、幕数动态增删、自动跳转 ✅
 - v1.1.1: UI优化 - 雪花图标、头像上传、双栏布局、完成按钮始终可点 ✅
 - v1.2: Step 4初步大纲 ✅、Step 6完成大纲 ✅
-- v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠、进度条弱化 ✅
-- v1.3: Step 8人物小传、Step 9规划场景、Step 10初稿
-- v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器
+- v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠/灰色细线 ✅
+- v1.3: Step 8人物小传 ✅、Step 9规划场景 ✅、沉浸感UI优化 ✅
+- v1.4: Step 10初稿撰写
+- v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器、项目库
 
 ## License
 

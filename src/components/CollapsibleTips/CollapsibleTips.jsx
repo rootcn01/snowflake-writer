@@ -4,10 +4,10 @@ export default function CollapsibleTips({ title, children }) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
-    <div className="card mb-6 bg-accent/5 border-accent/20">
+    <div className="card mb-6 border border-border">
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="w-full flex items-center justify-between text-sm font-medium text-accent focus:outline-none"
+        className="w-full flex items-center justify-between text-sm font-medium text-text-secondary focus:outline-none"
       >
         <span>{title || '提示'}</span>
         <svg
@@ -20,7 +20,7 @@ export default function CollapsibleTips({ title, children }) {
         </svg>
       </button>
       {!isCollapsed && (
-        <div className="mt-3 pt-3 border-t border-accent/20">
+        <div className="mt-3 pt-3 border-t border-border">
           {children}
         </div>
       )}

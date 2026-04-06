@@ -10,6 +10,8 @@ import StorySynopsis from './steps/StorySynopsis/StorySynopsis';
 import CharacterDetails from './steps/CharacterDetails/CharacterDetails';
 import SceneOutlines from './steps/SceneOutlines/SceneOutlines';
 import SceneList from './steps/SceneList/SceneList';
+import CharacterBackstories from './steps/CharacterBackstories/CharacterBackstories';
+import SceneDescriptions from './steps/SceneDescriptions/SceneDescriptions';
 import ExportModal from './components/ExportModal/ExportModal';
 
 function AppContent() {
@@ -32,35 +34,9 @@ function AppContent() {
       case 6:
         return <SceneList />;
       case 7:
-        // Character Backstories - placeholder
-        return (
-          <div className="max-w-content mx-auto animate-fade-in">
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-text-primary mb-2">人物小传</h1>
-              <p className="text-text-secondary">每个角色的深度背景描述。</p>
-            </div>
-            <div className="card">
-              <p className="text-text-secondary text-center py-12">
-                Step 8 功能开发中...
-              </p>
-            </div>
-          </div>
-        );
+        return <CharacterBackstories />;
       case 8:
-        // Scene Descriptions - placeholder
-        return (
-          <div className="max-w-content mx-auto animate-fade-in">
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-text-primary mb-2">规划场景</h1>
-              <p className="text-text-secondary">每个场景的详细描述。</p>
-            </div>
-            <div className="card">
-              <p className="text-text-secondary text-center py-12">
-                Step 9 功能开发中...
-              </p>
-            </div>
-          </div>
-        );
+        return <SceneDescriptions />;
       case 9:
         // Chapters - placeholder
         return (
