@@ -19,10 +19,7 @@
 - **Step 7: 场景清单** - 场景列表与摘要
 - **Step 8: 人物小传** - 左侧角色选择 + 右侧编辑器，纯编辑模式，自动保存
 - **Step 9: 规划场景** - 左侧场景列表 + 右侧编辑器，与Step 8布局统一
-
-### 开发中
-
-- Step 10: 初稿撰写
+- **Step 10: 初稿** - 分章节管理（左侧章节列表可排序 + 右侧编辑器，支持从Step 9场景生成章节草稿）
 
 ## 技术栈
 
@@ -69,6 +66,7 @@ src/
 │   ├── Toast/           # 提示组件
 │   └── TopBar/          # 顶栏
 ├── steps/               # 写作步骤页面
+│   ├── Chapters/              # Step 10: 初稿
 │   ├── CharacterBackstories/  # Step 8: 人物小传
 │   ├── CharacterDetails/     # Step 5: 角色宝典
 │   ├── CharacterSummary/     # Step 3: 人物概括
@@ -90,7 +88,7 @@ src/
 - v1.2: Step 4初步大纲 ✅、Step 6完成大纲 ✅
 - v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠/灰色细线 ✅
 - v1.3: Step 8人物小传 ✅、Step 9规划场景 ✅、沉浸感UI优化 ✅
-- v1.4: Step 10初稿撰写
+- v1.4: Step 10初稿 - 分章节管理 ✅
 - v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器、项目库
 
 ## License

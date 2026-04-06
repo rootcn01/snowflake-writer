@@ -12,6 +12,7 @@ import SceneOutlines from './steps/SceneOutlines/SceneOutlines';
 import SceneList from './steps/SceneList/SceneList';
 import CharacterBackstories from './steps/CharacterBackstories/CharacterBackstories';
 import SceneDescriptions from './steps/SceneDescriptions/SceneDescriptions';
+import Chapters from './steps/Chapters';
 import ExportModal from './components/ExportModal/ExportModal';
 
 function AppContent() {
@@ -38,20 +39,7 @@ function AppContent() {
       case 8:
         return <SceneDescriptions />;
       case 9:
-        // Chapters - placeholder
-        return (
-          <div className="max-w-content mx-auto animate-fade-in">
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-text-primary mb-2">初稿</h1>
-              <p className="text-text-secondary">撰写完整故事初稿。</p>
-            </div>
-            <div className="card">
-              <p className="text-text-secondary text-center py-12">
-                Step 10 功能开发中...
-              </p>
-            </div>
-          </div>
-        );
+        return <Chapters />;
       default:
         return <OneSentence />;
     }

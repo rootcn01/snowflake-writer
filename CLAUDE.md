@@ -57,6 +57,7 @@ src/
 │   ├── Toast/             # 提示组件
 │   └── TopBar/            # 顶栏
 ├── steps/              # 写作步骤页面
+│   ├── Chapters/          # Step 10: 初稿（分章节管理）
 │   ├── CharacterDetails/  # Step 5: 角色宝典
 │   ├── CharacterSummary/  # Step 3: 人物概括
 │   ├── CharacterBackstories/ # Step 8: 人物小传
@@ -78,7 +79,7 @@ src/
 - v1.2: Step 4初步大纲 ✅、Step 6完成大纲 ✅
 - v1.2.1: 大纲优化 - 自动同步Step 2、场景多角色Tag、Tips折叠/灰色细线 ✅
 - v1.3: Step 8人物小传 ✅、Step 9规划场景 ✅、沉浸感UI优化 ✅
-- v1.4: Step 10初稿撰写
+- v1.4: Step 10初稿 - 分章节管理（左侧章节列表可拖拽排序+右侧编辑器） ✅
 - v2.0: 关系图谱、时间线、AI 辅助、WYSIWYG 编辑器、项目库
 
 ## 版本完成工作流
