@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useProject } from '../../store/ProjectContext';
-import { generateMarkdown } from '../../utils/export';
 import AIAssistant from '../AIAssistant';
 
 export default function TopBar() {
@@ -39,22 +38,8 @@ export default function TopBar() {
     }
   };
 
-  const handleExport = async () => {
-    if (!window.electronAPI) {
-      showToast('error', '导出功能仅在Electron中可用');
-      return;
-    }
-
-    const markdown = generateMarkdown(project);
-    const result = await window.electronAPI.exportMarkdown({ project, markdown });
-
-    if (result.canceled) return;
-
-    if (result.success) {
-      showToast('success', '导出成功');
-    } else {
-      showToast('error', '导出失败: ' + result.error);
-    }
+  const handleExport = () => {
+    dispatch({ type: 'SET_SHOW_EXPORT_MODAL', payload: true });
   };
 
   const handleOpenBackup = () => {

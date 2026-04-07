@@ -22,6 +22,9 @@ export default function SettingsModal() {
   const { project, dispatch, showToast } = useProject();
   const [workflowTemplate, setWorkflowTemplate] = useState(project.meta?.workflowTemplate || 'standard');
   const [enabledSteps, setEnabledSteps] = useState(project.meta?.enabledSteps || standardTemplate);
+  const [bgType, setBgType] = useState(localStorage.getItem('bgType') || 'none');
+  const [bgColor, setBgColor] = useState(localStorage.getItem('bgColor') || '#1a1a1a');
+  const [bgImage, setBgImage] = useState(localStorage.getItem('bgImage') || '');
 
   const handleClose = () => {
     dispatch({ type: 'SET_SHOW_SETTINGS_MODAL', payload: false });
@@ -51,6 +54,21 @@ export default function SettingsModal() {
     setWorkflowTemplate('custom');
   };
 
+  const handleSelectImage = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Use file path directly for Electron
+        const path = file.path || URL.createObjectURL(file);
+        setBgImage(path);
+      }
+    };
+    input.click();
+  };
+
   const handleSave = () => {
     dispatch({
       type: 'UPDATE_WORKFLOW_SETTINGS',
@@ -59,8 +77,32 @@ export default function SettingsModal() {
         enabledSteps
       }
     });
-    showToast('success', '工作流设置已保存');
+    // Save background settings
+    localStorage.setItem('bgType', bgType);
+    localStorage.setItem('bgColor', bgColor);
+    localStorage.setItem('bgImage', bgImage);
+    // Apply background to body
+    applyBackground(bgType, bgColor, bgImage);
+    showToast('success', '设置已保存');
     handleClose();
+  };
+
+  const applyBackground = (type, color, image) => {
+    const body = document.body;
+    body.style.backgroundImage = '';
+    body.style.backgroundColor = '';
+    body.style.backgroundSize = '';
+    body.style.backgroundPosition = '';
+    body.style.backgroundRepeat = '';
+
+    if (type === 'color') {
+      body.style.backgroundColor = color;
+    } else if (type === 'image' && image) {
+      body.style.backgroundImage = `url("${image}")`;
+      body.style.backgroundSize = 'cover';
+      body.style.backgroundPosition = 'center';
+      body.style.backgroundRepeat = 'no-repeat';
+    }
   };
 
   const isSimplifiedSkipped = (stepIndex) => {
@@ -73,8 +115,8 @@ export default function SettingsModal() {
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-text-primary">工作流设置</h2>
-            <p className="text-sm text-text-secondary mt-1">自定义写作流程</p>
+            <h2 className="text-lg font-semibold text-text-primary">设置</h2>
+            <p className="text-sm text-text-secondary mt-1">工作流与背景设置</p>
           </div>
           <button
             onClick={handleClose}
@@ -182,6 +224,98 @@ export default function SettingsModal() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Background Settings (Issue #22) */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <label className="block text-sm font-medium text-text-primary mb-3">
+              自定义背景
+            </label>
+            <div className="space-y-4">
+              {/* Background Type */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setBgType('none')}
+                  className={`flex-1 p-3 rounded-lg border text-center transition-all ${
+                    bgType === 'none'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-border hover:border-accent/50'
+                  }`}
+                >
+                  <span className="text-lg">✕</span>
+                  <p className="text-xs text-text-secondary mt-1">无</p>
+                </button>
+                <button
+                  onClick={() => setBgType('color')}
+                  className={`flex-1 p-3 rounded-lg border text-center transition-all ${
+                    bgType === 'color'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-border hover:border-accent/50'
+                  }`}
+                >
+                  <span className="text-lg">🎨</span>
+                  <p className="text-xs text-text-secondary mt-1">纯色</p>
+                </button>
+                <button
+                  onClick={() => setBgType('image')}
+                  className={`flex-1 p-3 rounded-lg border text-center transition-all ${
+                    bgType === 'image'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-border hover:border-accent/50'
+                  }`}
+                >
+                  <span className="text-lg">🖼</span>
+                  <p className="text-xs text-text-secondary mt-1">图片</p>
+                </button>
+              </div>
+
+              {/* Color Picker */}
+              {bgType === 'color' && (
+                <div className="flex items-center gap-3 p-3 bg-bg-tertiary/50 rounded-lg">
+                  <input
+                    type="color"
+                    value={bgColor}
+                    onChange={(e) => setBgColor(e.target.value)}
+                    className="w-10 h-10 rounded cursor-pointer border border-border"
+                  />
+                  <input
+                    type="text"
+                    value={bgColor}
+                    onChange={(e) => setBgColor(e.target.value)}
+                    className="flex-1 px-3 py-2 bg-bg-tertiary border border-border rounded text-sm text-text-primary focus:border-accent focus:outline-none"
+                    placeholder="#1a1a1a"
+                  />
+                </div>
+              )}
+
+              {/* Image Picker */}
+              {bgType === 'image' && (
+                <div className="p-3 bg-bg-tertiary/50 rounded-lg">
+                  {bgImage ? (
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-16 h-12 rounded bg-cover bg-center border border-border"
+                        style={{ backgroundImage: `url("${bgImage}")` }}
+                      />
+                      <span className="flex-1 text-xs text-text-secondary truncate">{bgImage}</span>
+                      <button
+                        onClick={handleSelectImage}
+                        className="text-xs text-accent hover:text-accent-hover"
+                      >
+                        更换
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleSelectImage}
+                      className="w-full py-3 border border-dashed border-border rounded-lg text-sm text-text-secondary hover:border-accent hover:text-accent transition-colors"
+                    >
+                      点击选择图片
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

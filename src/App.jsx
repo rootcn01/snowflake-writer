@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ProjectProvider, useProject } from './store/ProjectContext';
 import TopBar from './components/TopBar/TopBar';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -22,6 +22,29 @@ import SettingsModal from './components/SettingsModal';
 
 function AppContent() {
   const { currentStep, saveStatus, showExportModal, showBackupModal, showSettingsModal, showProjectLibrary, currentView } = useProject();
+
+  // Apply background settings on mount (Issue #22)
+  useEffect(() => {
+    const bgType = localStorage.getItem('bgType') || 'none';
+    const bgColor = localStorage.getItem('bgColor') || '#1a1a1a';
+    const bgImage = localStorage.getItem('bgImage') || '';
+
+    const body = document.body;
+    body.style.backgroundImage = '';
+    body.style.backgroundColor = '';
+    body.style.backgroundSize = '';
+    body.style.backgroundPosition = '';
+    body.style.backgroundRepeat = '';
+
+    if (bgType === 'color') {
+      body.style.backgroundColor = bgColor;
+    } else if (bgType === 'image' && bgImage) {
+      body.style.backgroundImage = `url("${bgImage}")`;
+      body.style.backgroundSize = 'cover';
+      body.style.backgroundPosition = 'center';
+      body.style.backgroundRepeat = 'no-repeat';
+    }
+  }, []);
 
   const renderStep = () => {
     if (showProjectLibrary) {

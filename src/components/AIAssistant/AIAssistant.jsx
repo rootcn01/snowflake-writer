@@ -197,16 +197,13 @@ export default function AIAssistant() {
               </div>
               <div>
                 <label className="block text-xs text-text-secondary mb-1">Model</label>
-                <select
+                <input
+                  type="text"
                   value={apiConfig.model}
                   onChange={(e) => setApiConfig({ ...apiConfig, model: e.target.value })}
                   className="w-full px-3 py-2 bg-bg-tertiary border border-border rounded text-sm text-text-primary focus:border-accent focus:outline-none"
-                >
-                  <option value="gpt-4o">GPT-4o</option>
-                  <option value="gpt-4o-mini">GPT-4o Mini</option>
-                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                </select>
+                  placeholder="输入模型名称，如 gpt-4o、claude-3.5-sonnet"
+                />
               </div>
               <button
                 onClick={handleSaveConfig}

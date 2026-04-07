@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useProject } from '../../store/ProjectContext';
 
-export default function BackupModal({ onClose }) {
+export default function BackupModal() {
   const { project, dispatch, showToast } = useProject();
   const [backups, setBackups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,6 +10,11 @@ export default function BackupModal({ onClose }) {
   );
   const [restoring, setRestoring] = useState(null);
   const [showRestoreModal, setShowRestoreModal] = useState(null);
+
+  // Close modal via dispatch (not relying on onClose prop)
+  const handleClose = () => {
+    dispatch({ type: 'SET_SHOW_BACKUP_MODAL', payload: false });
+  };
 
   // Load backups
   const loadBackups = useCallback(async () => {
@@ -106,7 +111,7 @@ export default function BackupModal({ onClose }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <h2 className="text-lg font-bold text-text-primary">备份管理</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1 hover:bg-bg-tertiary rounded transition-colors"
           >
             <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">

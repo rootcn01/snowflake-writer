@@ -245,34 +245,59 @@ export default function ExportModal() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-border flex justify-between gap-3">
           <button
-            onClick={handleClose}
-            className="btn-secondary"
+            onClick={async () => {
+              if (!window.electronAPI) {
+                showToast('error', '导出功能仅在Electron中可用');
+                return;
+              }
+              const markdown = generateMarkdown(project);
+              const result = await window.electronAPI.exportMarkdown({ project, markdown });
+              if (result.canceled) return;
+              if (result.success) {
+                showToast('success', '快速导出成功');
+                handleClose();
+              } else {
+                showToast('error', '导出失败: ' + result.error);
+              }
+            }}
+            className="btn-secondary flex items-center gap-2"
           >
-            关闭
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            快速导出 Markdown
           </button>
-          <button
-            onClick={handleExport}
-            disabled={exporting}
-            className="btn-primary flex items-center gap-2"
-          >
-            {exporting ? (
-              <>
-                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                导出中...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                导出
-              </>
-            )}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleClose}
+              className="btn-secondary"
+            >
+              关闭
+            </button>
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="btn-primary flex items-center gap-2"
+            >
+              {exporting ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  导出中...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  导出
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
